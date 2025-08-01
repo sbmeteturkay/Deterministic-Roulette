@@ -115,8 +115,6 @@ namespace RouletteGame.Physics
         {
             _isBallMoving = false;
             _ballRigidbody.isKinematic = true;
-            _ballRigidbody.velocity = Vector3.zero;
-            _ballRigidbody.angularVelocity = Vector3.zero;
             if (_ballStartPoint != null)
             {
                 _ballRigidbody.position = _ballStartPoint.position;
