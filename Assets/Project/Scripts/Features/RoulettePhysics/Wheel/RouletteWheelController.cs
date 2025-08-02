@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Random = System.Random;
 
 namespace Game.RouletteSystem
 {
@@ -7,7 +8,6 @@ namespace Game.RouletteSystem
     {
         private readonly IWheelView view;
         private readonly IRouletteWheelModel model;
-        private readonly System.Random rng = new();
 
         public RouletteWheelController(IWheelView view, IRouletteWheelModel model)
         {
@@ -16,7 +16,6 @@ namespace Game.RouletteSystem
 
             // Subscribe to view events; controller exposes them outward unchanged.
             view.OnSpinStopped += pocket => OnSpinStopped?.Invoke(pocket);
-            view.OnIntermediatePocketChanged += pocket => OnIntermediatePocketChanged?.Invoke(pocket);
             view.OnSpinStarted += () => OnSpinStarted?.Invoke();
         }
 
@@ -24,21 +23,20 @@ namespace Game.RouletteSystem
         {
             // targetPocketNumber per spec yok sayılıyor (rastgele)
             // 1. Rastgele tam tur sayısı (örneğin 3..7)
-            int fullRotations = UnityEngine.Random.Range(3, 8); // upper bound exclusive -> 3..7
 
-            float totalRotation = fullRotations * 360f;
 
             // 2. Rastgele süre, model'den al (fallback değerler)
             float minDuration = GetModelFloatField("MinSpinDuration", 2f);
             float maxDuration = GetModelFloatField("MaxSpinDuration", 4f);
+            float minSpinAngularVelocity = GetModelFloatField("MinSpinAngularVelocity", 4f);
+            float maxSpinAngularVelocity = GetModelFloatField("MaxSpinAngularVelocity", 4f);
             float duration = UnityEngine.Random.Range(minDuration, maxDuration);
 
             // 3. Easing integralini hesapla
             float easeIntegral = ComputeEaseIntegral(model.RotationEaseCurve, samples: 128);
             if (easeIntegral <= 0f) easeIntegral = 1f; // güvenlik
 
-            // 4. Başlangıç açısal hızı çöz: totalRotation = duration * initialVelocity * easeIntegral
-            float initialAngularVelocity = totalRotation / (duration * easeIntegral);
+            float initialAngularVelocity = UnityEngine.Random.Range(minSpinAngularVelocity, maxSpinAngularVelocity);
 
             // 5. Spin’i başlat
             view.StartSpin(initialAngularVelocity, duration);

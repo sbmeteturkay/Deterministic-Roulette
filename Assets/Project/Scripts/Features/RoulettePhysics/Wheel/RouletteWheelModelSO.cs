@@ -20,6 +20,7 @@ namespace Game.RouletteSystem
         [Header("Basic Wheel")]
         public WheelType WheelType = WheelType.European;
         public float Radius = 1f;
+        public float PocketRadiusCircle = 1f;
 
         [Header("Spin Settings")]
         public AnimationCurve RotationEaseCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
@@ -36,6 +37,7 @@ namespace Game.RouletteSystem
 
         public WheelType WheelTypeProp => WheelType;
         public float RadiusProp => Radius;
+        public float PocketRadiusProp => PocketRadiusCircle;
         public AnimationCurve RotationEaseCurveProp => RotationEaseCurve;
         public float MinSpinAngularVelocityProp => MinSpinAngularVelocity;
         public float MaxSpinAngularVelocityProp => MaxSpinAngularVelocity;
@@ -110,6 +112,7 @@ namespace Game.RouletteSystem
         // Interface implementations
         WheelType IRouletteWheelModel.WheelType => WheelTypeProp;
         float IRouletteWheelModel.Radius => RadiusProp;
+        public float PocketCircleRadius => PocketRadiusProp;
         AnimationCurve IRouletteWheelModel.RotationEaseCurve => RotationEaseCurveProp;
         float IRouletteWheelModel.MinSpinAngularVelocity => MinSpinAngularVelocityProp;
         float IRouletteWheelModel.MaxSpinAngularVelocity => MaxSpinAngularVelocityProp;
@@ -120,6 +123,7 @@ namespace Game.RouletteSystem
     {
         WheelType WheelType { get; }
         float Radius { get; }
+        float PocketCircleRadius { get; }
         AnimationCurve RotationEaseCurve { get; }
         float MinSpinAngularVelocity { get; }
         float MaxSpinAngularVelocity { get; }

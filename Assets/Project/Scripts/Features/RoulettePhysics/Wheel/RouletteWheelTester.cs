@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Game.RouletteSystem.Game.RouletteSystem
@@ -20,14 +21,12 @@ namespace Game.RouletteSystem.Game.RouletteSystem
             }
 
             // Initialize wiring
-            viewComponent.Initialize(modelSO, viewComponent.Center);
             controller = new RouletteWheelController(viewComponent, modelSO);
 
             controller.OnSpinStarted += () => Debug.Log("[Tester] Spin started");
             controller.OnIntermediatePocketChanged += pocket => Debug.Log($"[Tester] Intermediate pocket: {pocket}");
             controller.OnSpinStopped += pocket => Debug.Log($"[Tester] Spin stopped on pocket: {pocket}");
         }
-
         private void Update()
         {
             // Drive view rotation

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using System.Linq;
+using UnityEngine.Serialization;
 
 namespace Game.RouletteSystem
 {
@@ -8,8 +10,8 @@ namespace Game.RouletteSystem
         [Header("References")]
         [SerializeField] private Transform center;
         [SerializeField] private RouletteWheelModelSO modelSO;
-        [SerializeField, Tooltip("Görsel olarak dönecek nesne. Eğer boşsa kendi transform'unu kullanır.")]
-        private Transform spinVisual;
+        [FormerlySerializedAs("spinVisual")] [SerializeField, Tooltip("Görsel olarak dönecek nesne. Eğer boşsa kendi transform'unu kullanır.")]
+        public Transform SpinVisual;
 
         [Header("Visual")]
         [SerializeField, Tooltip("0° referansını kaydırmak için (derece). Gizmo ve cep hesaplamalarıyla uyumlu tutmak için kullanılır.")]
@@ -26,20 +28,12 @@ namespace Game.RouletteSystem
 
         internal IRouletteWheelModel Model => model;
         internal Transform Center => center;
-        public void Initialize(IRouletteWheelModel model, Transform center, Transform spinVisual = null)
-        {
-            if (model is RouletteWheelModelSO so)
-                modelSO = so;
-
-            currentRotation = 0f;
-            spinning = false;
-        }
 
         public void StartSpin(float initialAngularVelocity, float duration)
         {
             if (model == null) return;
             this.initialAngularVelocity = initialAngularVelocity;
-            spinDuration = Mathf.Max(0.01f, duration);
+            spinDuration = duration;
             elapsed = 0f;
             spinning = true;
             OnSpinStarted?.Invoke();
@@ -57,14 +51,7 @@ namespace Game.RouletteSystem
 
             ApplyVisualRotation();
 
-            int currentPocket = GetPocketUnderIndicator();
-            if (currentPocket != lastReportedPocket)
-            {
-                lastReportedPocket = currentPocket;
-                OnIntermediatePocketChanged?.Invoke(currentPocket);
-            }
-
-            if (t >= 1f || Mathf.Abs(angularVelocity) < 0.1f)
+            if (t >= 1f && Mathf.Abs(angularVelocity) < 0.1f)
             {
                 if (spinning)
                 {
@@ -77,8 +64,8 @@ namespace Game.RouletteSystem
         private void ApplyVisualRotation()
         {
             float total = currentRotation + rotationOffsetDegrees;
-            if (spinVisual != null)
-                spinVisual.localRotation = Quaternion.Euler(0f, total, 0);
+            if (SpinVisual != null)
+                SpinVisual.localRotation = Quaternion.Euler(0f, total, 0);
         }
 
         public int GetPocketUnderIndicator()
@@ -86,26 +73,47 @@ namespace Game.RouletteSystem
             if (model == null) return -1;
 
             float normalized = ((currentRotation + rotationOffsetDegrees) % 360f + 360f) % 360f;
-            var pockets = model.PocketDefinitions;
-            int count = pockets.Count;
-            float slice = 360f / count;
-            int index = Mathf.FloorToInt(normalized / slice);
-            index = Mathf.Clamp(index, 0, count - 1);
-            return pockets[index].Number;
+            Debug.Log(normalized);
+            Debug.Log(GetPocketWorldPosition(0));
+            return 0;
         }
 
-        public event Action<int> OnIntermediatePocketChanged;
+        public Vector3 GetPocketWorldPosition(int pocketNumber)
+        {
+            var pockets = model.PocketDefinitions;
+            int count = pockets.Count;
+            float sweep = 360f / count;
+            var index = -1;
+            Vector3 refDir = Vector3.ProjectOnPlane(center.transform.up, center.transform.forward).normalized;
+            for (int i = 0; i < count; i++)
+            {
+                if (pockets[i].Number == pocketNumber)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            
+            float startAngle = index * sweep;
+            float midAngle = startAngle + sweep * 0.5f;
+            
+            Vector3 pocketPos = center.position + AngleToDirectionInPlane(midAngle, center.transform.forward, refDir) * (model.PocketCircleRadius);
+            return pocketPos;
+        }
+        private static Vector3 AngleToDirectionInPlane(float degrees, Vector3 planeNormal, Vector3 referenceDir)
+        {
+            // Rotate referenceDir around planeNormal by degrees
+            return Quaternion.AngleAxis(degrees, planeNormal) * referenceDir;
+        }
         public event Action<int> OnSpinStopped;
         public event Action OnSpinStarted;
     }
 
     public interface IWheelView
     {
-        void Initialize(IRouletteWheelModel model, Transform center, Transform spinVisual = null);
         void StartSpin(float initialAngularVelocity, float duration);
         void UpdateRotation(float deltaTime);
         int GetPocketUnderIndicator();
-        event Action<int> OnIntermediatePocketChanged;
         event Action<int> OnSpinStopped;
         event Action OnSpinStarted;
     }

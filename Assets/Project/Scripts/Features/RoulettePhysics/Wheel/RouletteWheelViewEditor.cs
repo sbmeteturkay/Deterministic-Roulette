@@ -28,6 +28,7 @@ namespace Game.RouletteSystem
 
             Vector3 pos = center.position;
             float radius = model.Radius;
+            float pocketRadius = model.PocketCircleRadius;
 
             // Determine plane normal: assume wheel lies such that its local forward is the axis (adjust if your wheel's axis differs)
             // If your wheel rotates around its local Z, use view.transform.forward as normal; if around X/Y adjust accordingly.
@@ -43,6 +44,9 @@ namespace Game.RouletteSystem
             // Draw outer circle in that plane
             Handles.color = Color.white;
             Handles.DrawWireDisc(pos, planeNormal, radius);
+            
+            Handles.color = Color.white;
+            Handles.DrawWireDisc(pos, planeNormal, pocketRadius);
 
             var pockets = model.PocketDefinitions;
             int count = pockets.Count;
@@ -68,9 +72,15 @@ namespace Game.RouletteSystem
                 // Label
                 Vector3 labelPos = pos + AngleToDirectionInPlane(midAngle, planeNormal, refDir) * (radius * 0.9f);
                 GUIStyle style = new GUIStyle();
+                style.fontSize = 16;
                 style.normal.textColor = pocket.DisplayColor;
                 style.alignment = TextAnchor.MiddleCenter;
                 Handles.Label(labelPos, pocket.Number.ToString(), style);
+                
+                //pocket indicator
+                
+                Vector3 pocketPos = pos + AngleToDirectionInPlane(midAngle, planeNormal, refDir) * (pocketRadius);
+                Handles.SphereHandleCap(0,pocketPos, Quaternion.identity, .01f, EventType.Repaint);
             }
 
             // Indicator: top in wheel's local reference (angle zero with offset)
