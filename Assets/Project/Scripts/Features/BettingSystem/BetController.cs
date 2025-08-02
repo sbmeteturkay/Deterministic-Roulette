@@ -12,6 +12,7 @@ namespace RouletteGame.Models
         private string ID;
         float multiplier;
     }
+
     public class BetController : MonoBehaviour
     {
         ChipManager _chipManager;
@@ -22,7 +23,6 @@ namespace RouletteGame.Models
         {
             _chipManager = chipManager;
             _bettingSystem = bettingSystem;
-            Debug.Log("init");
         }
         private void OnEnable()
         {
@@ -34,10 +34,10 @@ namespace RouletteGame.Models
         }
         private void AreaSelectorOnSelectArea(string signal)
         {
-            List<int> coveredNumbers = new List<int>();
-            if (signal[0] == '1')
+            var bet = RouletteSignalParser.ParseSignal(signal);
+            if (bet.Category == "Straight")
             {
-                _bettingSystem.AddBet(new StraightBet(_chipManager.SelectedChipValue,coveredNumbers,2,"Straight Bet"));
+                _bettingSystem.AddBet(new StraightBet(_chipManager.SelectedChipValue,bet.CoveredNumbers,bet.Multiplier, bet.BetType));
             }
         }
     }
