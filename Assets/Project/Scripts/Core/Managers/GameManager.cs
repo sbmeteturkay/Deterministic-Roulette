@@ -1,8 +1,8 @@
+using Game.RouletteSystem;
+using RouletteGame.Controllers;
 using UnityEngine;
 using RouletteGame.Models;
 using RouletteGame.Views;
-using RouletteGame.Controllers;
-using RouletteGame.Interfaces;
 
 namespace RouletteGame.Managers
 {
@@ -13,32 +13,29 @@ namespace RouletteGame.Managers
     {
         [Header("Models")]
         [SerializeField] private PlayerStatsModel _playerStatsModel;
-        [SerializeField] private RouletteWheelModel _rouletteWheelModel;
         [SerializeField] private BettingSystem _bettingSystem;
         [SerializeField] private ChipManager _chipManager;
         
         [Header("Views")]
         [SerializeField] private PlayerStatsView _playerStatsView;
-        [SerializeField] private RouletteWheelView _rouletteWheelView;
         [SerializeField] private BettingUI _bettingUI;
 
         [Header("Controllers")]
-        [SerializeField] private RouletteWheelController _rouletteWheelController;
         [SerializeField] private DeterministicOutcomeSelector _deterministicOutcomeSelector;
         [SerializeField] private BetController _betController;
+        [SerializeField] private RouletteController rouletteController;
 
         // Diğer yardımcı sınıflar
         private PayoutCalculator _payoutCalculator;
-        private IRouletteType _currentRouletteType; // Avrupa veya Amerikan ruleti
+
+        private bool useRandomNumber=false;
 
         void Awake()
         {
             // Bağımlılık Enjeksiyonu (Dependency Injection) ve Başlatma
             // Varsayılan olarak Avrupa Ruleti kullanıyoruz
-            _currentRouletteType = new EuropeanRoulette(); 
 
             _playerStatsModel = new PlayerStatsModel();
-            _rouletteWheelModel = new RouletteWheelModel(_currentRouletteType);
             _bettingSystem = new BettingSystem();
             _chipManager = new ChipManager();
             _payoutCalculator = new PayoutCalculator();
@@ -46,25 +43,43 @@ namespace RouletteGame.Managers
             // View'ları ve Controller'ları başlat
             _playerStatsView.Initialize(_playerStatsModel);
             _bettingUI.Initialize(_chipManager, _bettingSystem);
-            _rouletteWheelController.Initialize(_rouletteWheelModel, _rouletteWheelView);
-            _deterministicOutcomeSelector.Initialize(_rouletteWheelModel, _currentRouletteType);
             _betController.Initialize(_chipManager, _bettingSystem);
 
+
+            _deterministicOutcomeSelector.SetNumbers(rouletteController.ReturnNumbers());
+
             // Event abonelikleri
-            _rouletteWheelModel.OnSpinCompleted += OnSpinCompleted;
             _bettingUI.OnSpinRequested += OnSpinRequested;
+            
+            _deterministicOutcomeSelector.OnDeterministicModeChanged += DeterministicOutcomeSelectorOnOnDeterministicModeChanged;
+            _deterministicOutcomeSelector.OnNumberSelectionChanged += DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
+            
+            rouletteController.OnRouletteBallInPocket += RouletteControllerOnOnRouletteBallInPocket;
         }
 
+ 
         void OnDestroy()
         {
-            if (_rouletteWheelModel != null)
-            {
-                _rouletteWheelModel.OnSpinCompleted -= OnSpinCompleted;
-            }
-            if (_bettingUI != null)
-            {
-                _bettingUI.OnSpinRequested -= OnSpinRequested;
-            }
+            _bettingUI.OnSpinRequested -= OnSpinRequested;
+            _deterministicOutcomeSelector.OnDeterministicModeChanged -= DeterministicOutcomeSelectorOnOnDeterministicModeChanged;
+            _deterministicOutcomeSelector.OnNumberSelectionChanged -= DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
+            
+            rouletteController.OnRouletteBallInPocket -= RouletteControllerOnOnRouletteBallInPocket;
+
+        }
+        private void DeterministicOutcomeSelectorOnOnNumberSelectionChanged(int targetNumber)
+        {
+            rouletteController.SetTargetOutCome(targetNumber);
+        }
+
+        private void DeterministicOutcomeSelectorOnOnDeterministicModeChanged(bool isDeterministic)
+        {
+            useRandomNumber = !isDeterministic;
+            rouletteController.UseRandomNumber(useRandomNumber);
+        }
+        private void RouletteControllerOnOnRouletteBallInPocket(int outcomeWinningNumber)
+        {
+            OnSpinCompleted(outcomeWinningNumber);
         }
 
         private void OnSpinRequested()
@@ -73,8 +88,8 @@ namespace RouletteGame.Managers
             {
                 _chipManager.DeductChips(_bettingSystem.TotalBetAmount);
                 _playerStatsModel.IncrementSpinsPlayed();
-                _rouletteWheelController.SpinWheel();
                 _bettingUI.SetSpinButtonEnabled(false);
+                rouletteController.Spin();
             }
             else
             {
@@ -108,19 +123,6 @@ namespace RouletteGame.Managers
 
             _bettingSystem.ClearAllBets(); // Bahisleri temizle
             _bettingUI.SetSpinButtonEnabled(true);
-        }
-
-        /// <summary>
-        /// Rulet tipini değiştirir (Avrupa/Amerikan)
-        /// </summary>
-        /// <param name="newType">Yeni rulet tipi</param>
-        public void SetRouletteType(IRouletteType newType)
-        {
-            _currentRouletteType = newType;
-            _rouletteWheelModel = new RouletteWheelModel(_currentRouletteType); // Modeli yeni tip ile yeniden başlat
-            _rouletteWheelView.Initialize(_rouletteWheelModel); // View'ı yeni model ile güncelle
-            _deterministicOutcomeSelector.Initialize(_rouletteWheelModel, _currentRouletteType); // Kontrolcüyü güncelle
-            Debug.Log($"Rulet tipi {newType.TypeName} olarak değiştirildi.");
         }
     }
 }
