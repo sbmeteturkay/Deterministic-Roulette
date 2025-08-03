@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace Game.RouletteSystem
 {
@@ -15,11 +16,13 @@ namespace Game.RouletteSystem
     }
 
     [CreateAssetMenu(menuName = "RouletteSystem/RouletteWheelModel")]
-    public class RouletteWheelModelSO : ScriptableObject, IRouletteWheelModel
+    public class RouletteWheelModelSO : ScriptableObject
     {
-        [Header("Basic Wheel")]
+        [Header("Roulette Wheel")]
         public WheelType WheelType = WheelType.European;
-        public float Radius = 1f;
+        public float BowlRadius = 2f;
+        public float DeflectorsRadiusCircle = 1f;
+        public float WheelRadius = 1f;
         public float PocketRadiusCircle = 1f;
 
         [Header("Spin Settings")]
@@ -34,13 +37,7 @@ namespace Game.RouletteSystem
         [SerializeField] private List<PocketDefinition> pocketDefinitions = new();
 
         private IReadOnlyList<PocketDefinition> cached;
-
-        public WheelType WheelTypeProp => WheelType;
-        public float RadiusProp => Radius;
-        public float PocketRadiusProp => PocketRadiusCircle;
-        public AnimationCurve RotationEaseCurveProp => RotationEaseCurve;
-        public float MinSpinAngularVelocityProp => MinSpinAngularVelocity;
-        public float MaxSpinAngularVelocityProp => MaxSpinAngularVelocity;
+        
         public IReadOnlyList<PocketDefinition> PocketDefinitions => GetOrCreatePocketDefinitions();
 
         private IReadOnlyList<PocketDefinition> GetOrCreatePocketDefinitions()
@@ -94,6 +91,7 @@ namespace Game.RouletteSystem
             // Simplified: 0 and 00 -> green, others alternating red/black based on standard rules.
             if (number == 0 || number == 00) return Color.green;
             // A true mapping would use the known red/black sets; placeholder:
+            //todo place right colors
             return (number % 2 == 0) ? Color.black : Color.red;
         }
 
@@ -108,25 +106,5 @@ namespace Game.RouletteSystem
                 def.StartAngle = i * sweep;
             }
         }
-
-        // Interface implementations
-        WheelType IRouletteWheelModel.WheelType => WheelTypeProp;
-        float IRouletteWheelModel.Radius => RadiusProp;
-        public float PocketCircleRadius => PocketRadiusProp;
-        AnimationCurve IRouletteWheelModel.RotationEaseCurve => RotationEaseCurveProp;
-        float IRouletteWheelModel.MinSpinAngularVelocity => MinSpinAngularVelocityProp;
-        float IRouletteWheelModel.MaxSpinAngularVelocity => MaxSpinAngularVelocityProp;
-        IReadOnlyList<PocketDefinition> IRouletteWheelModel.PocketDefinitions => PocketDefinitions;
-    }
-
-    public interface IRouletteWheelModel
-    {
-        WheelType WheelType { get; }
-        float Radius { get; }
-        float PocketCircleRadius { get; }
-        AnimationCurve RotationEaseCurve { get; }
-        float MinSpinAngularVelocity { get; }
-        float MaxSpinAngularVelocity { get; }
-        IReadOnlyList<PocketDefinition> PocketDefinitions { get; }
     }
 }

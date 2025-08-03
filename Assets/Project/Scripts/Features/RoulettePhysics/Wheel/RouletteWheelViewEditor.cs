@@ -27,8 +27,10 @@ namespace Game.RouletteSystem
             if (model == null || center == null) return;
 
             Vector3 pos = center.position;
-            float radius = model.Radius;
-            float pocketRadius = model.PocketCircleRadius;
+            float bowlRadius = model.BowlRadius;
+            float deflectorsRadius = model.DeflectorsRadiusCircle;
+            float wheelRadius = model.WheelRadius;
+            float pocketRadius = model.PocketRadiusCircle;
 
             // Determine plane normal: assume wheel lies such that its local forward is the axis (adjust if your wheel's axis differs)
             // If your wheel rotates around its local Z, use view.transform.forward as normal; if around X/Y adjust accordingly.
@@ -43,10 +45,10 @@ namespace Game.RouletteSystem
 
             // Draw outer circle in that plane
             Handles.color = Color.white;
-            Handles.DrawWireDisc(pos, planeNormal, radius);
-            
-            Handles.color = Color.white;
-            Handles.DrawWireDisc(pos, planeNormal, pocketRadius);
+            Handles.DrawWireDisc(pos, planeNormal, bowlRadius);
+            Handles.DrawWireDisc(pos, planeNormal, deflectorsRadius);
+            Handles.DrawWireDisc(pos, planeNormal, wheelRadius );
+            Handles.DrawWireDisc(pos, planeNormal, pocketRadius );
 
             var pockets = model.PocketDefinitions;
             int count = pockets.Count;
@@ -67,10 +69,10 @@ namespace Game.RouletteSystem
                 // Separator line
                 Vector3 dirStart = AngleToDirectionInPlane(startAngle, planeNormal, refDir);
                 Handles.color = Color.gray;
-                Handles.DrawLine(pos, pos + dirStart * radius);
+                Handles.DrawLine(pos, pos + dirStart * wheelRadius);
 
                 // Label
-                Vector3 labelPos = pos + AngleToDirectionInPlane(midAngle, planeNormal, refDir) * (radius * 0.9f);
+                Vector3 labelPos = pos + AngleToDirectionInPlane(midAngle, planeNormal, refDir) * (wheelRadius * 0.9f);
                 GUIStyle style = new GUIStyle();
                 style.fontSize = 16;
                 style.normal.textColor = pocket.DisplayColor;
@@ -78,7 +80,6 @@ namespace Game.RouletteSystem
                 Handles.Label(labelPos, pocket.Number.ToString(), style);
                 
                 //pocket indicator
-                
                 Vector3 pocketPos = pos + AngleToDirectionInPlane(midAngle, planeNormal, refDir) * (pocketRadius);
                 Handles.SphereHandleCap(0,pocketPos, Quaternion.identity, .01f, EventType.Repaint);
             }
@@ -86,7 +87,7 @@ namespace Game.RouletteSystem
             // Indicator: top in wheel's local reference (angle zero with offset)
             Vector3 indicatorDir = AngleToDirectionInPlane(0 + offset, planeNormal, refDir);
             Handles.color = Color.yellow;
-            Handles.DrawLine(pos + indicatorDir * (radius + 0.1f), pos + indicatorDir * (radius + 0.3f));
+            Handles.DrawLine(pos + indicatorDir * (wheelRadius + 0.1f), pos + indicatorDir * (wheelRadius + 0.3f));
         }
 
         private static Vector3 AngleToDirectionInPlane(float degrees, Vector3 planeNormal, Vector3 referenceDir)

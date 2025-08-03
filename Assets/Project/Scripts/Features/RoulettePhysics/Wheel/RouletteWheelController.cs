@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using Random = System.Random;
 
 namespace Game.RouletteSystem
@@ -7,94 +8,94 @@ namespace Game.RouletteSystem
     public class RouletteWheelController : IWheelController
     {
         private readonly IWheelView view;
-        private readonly IRouletteWheelModel model;
+        private readonly RouletteWheelModelSO model;
 
-        public RouletteWheelController(IWheelView view, IRouletteWheelModel model)
+        public event Action OnSpinStarted;
+        public event Action OnSpinStopped;
+        
+        private int selectedPocked;
+        public RouletteWheelController(IWheelView view, RouletteWheelModelSO model)
         {
             this.view = view;
             this.model = model;
-
-            // Subscribe to view events; controller exposes them outward unchanged.
-            view.OnSpinStopped += pocket => OnSpinStopped?.Invoke(pocket);
-            view.OnSpinStarted += () => OnSpinStarted?.Invoke();
         }
 
-        public void StartSpin(int? targetPocketNumber = null)
+        public IEnumerator StartSpin()
         {
-            // targetPocketNumber per spec yok sayılıyor (rastgele)
-            // 1. Rastgele tam tur sayısı (örneğin 3..7)
-
-
             // 2. Rastgele süre, model'den al (fallback değerler)
-            float minDuration = GetModelFloatField("MinSpinDuration", 2f);
-            float maxDuration = GetModelFloatField("MaxSpinDuration", 4f);
-            float minSpinAngularVelocity = GetModelFloatField("MinSpinAngularVelocity", 4f);
-            float maxSpinAngularVelocity = GetModelFloatField("MaxSpinAngularVelocity", 4f);
+            float minDuration = model.MinSpinDuration;
+            float maxDuration = model.MaxSpinDuration;
+            float minSpinAngularVelocity = model.MinSpinAngularVelocity;
+            float maxSpinAngularVelocity = model.MaxSpinAngularVelocity;
             float duration = UnityEngine.Random.Range(minDuration, maxDuration);
-
-            // 3. Easing integralini hesapla
-            float easeIntegral = ComputeEaseIntegral(model.RotationEaseCurve, samples: 128);
-            if (easeIntegral <= 0f) easeIntegral = 1f; // güvenlik
 
             float initialAngularVelocity = UnityEngine.Random.Range(minSpinAngularVelocity, maxSpinAngularVelocity);
 
-            // 5. Spin’i başlat
-            view.StartSpin(initialAngularVelocity, duration);
+            yield return UpdateRotation(duration,initialAngularVelocity);
         }
-
+        
         public void StopSpin()
         {
             // Doğal easing ile durduğu için burada bir şey yapmıyoruz.
             // Gerekirse hızlı durdurma için view'a ek API gerekir.
         }
-
-        public void ForceSetRotation(float angleDegrees)
+        
+        public int GetRandomPocketNumber()
         {
-            // Eğer view bu API'yı desteklemiyorsa genişletmen gerekir.
-            // Burada varsayılan olarak yapılacak bir şey yok.
+            selectedPocked = model.PocketDefinitions[UnityEngine.Random.Range(0,model.PocketDefinitions.Count - 1)].Number;
+            Debug.Log("pocket selected: "+selectedPocked);
+            return selectedPocked;
         }
 
-        public event Action OnSpinStarted;
-        public event Action<int> OnSpinStopped;
-        public event Action<int> OnIntermediatePocketChanged;
-
-        // --- Yardımcılar ---
-
-        private float ComputeEaseIntegral(AnimationCurve curve, int samples = 100)
+        public Vector3 GetPocketPosition()
         {
-            float sum = 0f;
-            float step = 1f / samples;
-            for (int i = 0; i <= samples; i++)
+            return view.GetPocketWorldPosition(model.PocketDefinitions[selectedPocked].Number);
+        }
+        public float GetBowlRadius()
+        {
+            return model.BowlRadius;
+        }
+
+        public float GetDeflectorCircleRadius()
+        {
+            return model.DeflectorsRadiusCircle;
+        }
+
+        public Transform GetWheelCenter()
+        {
+            return view.GetWheelCenter();
+        }
+        private IEnumerator UpdateRotation(float duration, float initialAngularVelocity)
+        {
+            float elapsed = 0f;
+            float currentRotation = 0f;
+            
+            while (true)
             {
-                float t = i * step;
-                float v = curve.Evaluate(t);
-                if (i == 0 || i == samples)
-                    sum += v * 0.5f;
-                else
-                    sum += v;
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                float ease = model.RotationEaseCurve.Evaluate(t);
+                float angularVelocity = initialAngularVelocity * ease;
+
+                currentRotation += angularVelocity * Time.deltaTime;
+                view.GetSpinVisual().localRotation = Quaternion.Euler(0f, currentRotation, 0f);
+
+                if (t >= 1f)
+                    break;
+
+                yield return null;
             }
-            return sum * step;
+
+            OnSpinStopped?.Invoke();
         }
 
-        private float GetModelFloatField(string fieldName, float fallback)
-        {
-            // ScriptableObject özel alanlarını almak için cast etmeye çalış
-            if (model is RouletteWheelModelSO so)
-            {
-                var field = typeof(RouletteWheelModelSO).GetField(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-                if (field != null && field.GetValue(so) is float f)
-                    return f;
-            }
-            return fallback;
-        }
+        
     }
     public interface IWheelController
     {
-        void StartSpin(int? targetPocketNumber = null);
+        IEnumerator StartSpin();
         void StopSpin();
-        void ForceSetRotation(float angleDegrees);
         event Action OnSpinStarted;
-        event Action<int> OnSpinStopped;
-        event Action<int> OnIntermediatePocketChanged;
+        event Action OnSpinStopped;
     }
 }
