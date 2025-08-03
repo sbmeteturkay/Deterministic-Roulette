@@ -42,7 +42,6 @@ namespace Game.RouletteSystem
 
         private IReadOnlyList<PocketDefinition> GetOrCreatePocketDefinitions()
         {
-            if (cached != null) return cached;
             // If not populated manually, generate standard sequence.
             if (pocketDefinitions == null || pocketDefinitions.Count == 0)
             {
@@ -79,22 +78,33 @@ namespace Game.RouletteSystem
                 var def = new PocketDefinition
                 {
                     Number = n,
-                    DisplayColor = DetermineColor(n)
+                    DisplayColor = AssignColor(n)
                 };
                 list.Add(def);
             }
             return list;
         }
 
-        private Color DetermineColor(int number)
+        public Color AssignColor(int number)
         {
-            // Simplified: 0 and 00 -> green, others alternating red/black based on standard rules.
-            if (number == 0 || number == 00) return Color.green;
-            // A true mapping would use the known red/black sets; placeholder:
-            //todo place right colors
-            return (number % 2 == 0) ? Color.black : Color.red;
-        }
 
+            // Sıfırlar yeşil
+            if (number == 0)
+            {
+                return Color.green;
+            }
+
+            // Kırmızı mı?
+            if (redNumbers.Contains(number))
+            {
+                return Color.red;
+            }
+            else
+            {
+                // Numara geçerli bir sayı mı?: default black
+                return Color.black;
+            }
+        }
         private void PrecomputeAngles(List<PocketDefinition> list)
         {
             int count = list.Count;
@@ -106,5 +116,9 @@ namespace Game.RouletteSystem
                 def.StartAngle = i * sweep;
             }
         }
+        private readonly HashSet<int> redNumbers = new HashSet<int>
+        {
+            1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36
+        };
     }
 }
