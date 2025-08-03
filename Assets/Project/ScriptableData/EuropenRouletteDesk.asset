@@ -1,0 +1,223 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 343ab30037e26b840b266101015cc340, type: 3}
+  m_Name: EuropenRouletteDesk
+  m_EditorClassIdentifier: 
+  WheelType: 0
+  BowlRadius: 0.6
+  DeflectorsRadiusCircle: 0.5
+  WheelRadius: 0.45
+  PocketRadiusCircle: 0.32
+  RotationEaseCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0011749268
+      value: 0
+      inSlope: -1.3054216
+      outSlope: -1.3054216
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.076933786
+    - serializedVersion: 3
+      time: 0.35033375
+      value: 1.0011848
+      inSlope: 0.041501816
+      outSlope: 0.041501816
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.08148989
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6561248
+      value: 0.34886247
+      inSlope: -2.7195256
+      outSlope: -2.7195256
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.084721
+      outWeight: 0.11878812
+    - serializedVersion: 3
+      time: 0.8488025
+      value: 0.0038787276
+      inSlope: -0.4101941
+      outSlope: -0.4101941
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10569285
+      outWeight: 0.53459066
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 1.2933972
+      outSlope: 1.2933972
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.59408295
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MinSpinAngularVelocity: 120
+  MaxSpinAngularVelocity: 360
+  MinSpinDuration: 18
+  MaxSpinDuration: 24
+  pocketDefinitions:
+  - Number: 0
+    DisplayColor: {r: 0, g: 1, b: 0, a: 1}
+    StartAngle: 0
+    SweepAngle: 9.72973
+  - Number: 32
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 9.72973
+    SweepAngle: 9.72973
+  - Number: 15
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 19.45946
+    SweepAngle: 9.72973
+  - Number: 19
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 29.18919
+    SweepAngle: 9.72973
+  - Number: 4
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 38.91892
+    SweepAngle: 9.72973
+  - Number: 21
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 48.648647
+    SweepAngle: 9.72973
+  - Number: 2
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 58.37838
+    SweepAngle: 9.72973
+  - Number: 25
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 68.10811
+    SweepAngle: 9.72973
+  - Number: 17
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 77.83784
+    SweepAngle: 9.72973
+  - Number: 34
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 87.567566
+    SweepAngle: 9.72973
+  - Number: 6
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 97.297295
+    SweepAngle: 9.72973
+  - Number: 27
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 107.02702
+    SweepAngle: 9.72973
+  - Number: 13
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 116.75676
+    SweepAngle: 9.72973
+  - Number: 36
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 126.48649
+    SweepAngle: 9.72973
+  - Number: 11
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 136.21622
+    SweepAngle: 9.72973
+  - Number: 30
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 145.94594
+    SweepAngle: 9.72973
+  - Number: 8
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 155.67567
+    SweepAngle: 9.72973
+  - Number: 23
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 165.40541
+    SweepAngle: 9.72973
+  - Number: 10
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 175.13513
+    SweepAngle: 9.72973
+  - Number: 5
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 184.86487
+    SweepAngle: 9.72973
+  - Number: 24
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 194.59459
+    SweepAngle: 9.72973
+  - Number: 16
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 204.32433
+    SweepAngle: 9.72973
+  - Number: 33
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 214.05405
+    SweepAngle: 9.72973
+  - Number: 1
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 223.78378
+    SweepAngle: 9.72973
+  - Number: 20
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 233.51352
+    SweepAngle: 9.72973
+  - Number: 14
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 243.24324
+    SweepAngle: 9.72973
+  - Number: 31
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 252.97298
+    SweepAngle: 9.72973
+  - Number: 9
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 262.7027
+    SweepAngle: 9.72973
+  - Number: 22
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 272.43243
+    SweepAngle: 9.72973
+  - Number: 18
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 282.16217
+    SweepAngle: 9.72973
+  - Number: 29
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 291.89188
+    SweepAngle: 9.72973
+  - Number: 7
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 301.6216
+    SweepAngle: 9.72973
+  - Number: 28
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 311.35135
+    SweepAngle: 9.72973
+  - Number: 12
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 321.0811
+    SweepAngle: 9.72973
+  - Number: 35
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 330.81082
+    SweepAngle: 9.72973
+  - Number: 3
+    DisplayColor: {r: 1, g: 0, b: 0, a: 1}
+    StartAngle: 340.54053
+    SweepAngle: 9.72973
+  - Number: 26
+    DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+    StartAngle: 350.27026
+    SweepAngle: 9.72973

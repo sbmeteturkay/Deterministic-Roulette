@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5e23da2c8d4e68b8aaf1b2db40dc1c, type: 3}
+  m_Name: RouletteTable
+  m_EditorClassIdentifier: 
+  areas:
+  - cellSize: {x: 0.15, y: 0.75}
+    position: {x: 1.01, y: 0}
+    ID: 0
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.85, y: 0.28}
+    ID: 1
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.85, y: 0}
+    ID: 2
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.85, y: -0.27}
+    ID: 3
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.7, y: 0.28}
+    ID: 4
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.7, y: 0}
+    ID: 5
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.7, y: -0.27}
+    ID: 6
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.54, y: 0.28}
+    ID: 7
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.54, y: 0}
+    ID: 8
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.54, y: -0.27}
+    ID: 9
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.385, y: 0.27}
+    ID: 10
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.385, y: 0}
+    ID: 11
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.385, y: -0.275}
+    ID: 12
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.23, y: 0.275}
+    ID: 13
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.23, y: 0}
+    ID: 14
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.23, y: -0.275}
+    ID: 15
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.08, y: 0.275}
+    ID: 19
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.08, y: 0.275}
+    ID: 16
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.23, y: 0.275}
+    ID: 22
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.38, y: 0.275}
+    ID: 25
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.85, y: 0.275}
+    ID: 34
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.85, y: 0}
+    ID: 35
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.85, y: -0.28}
+    ID: 35
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.54, y: 0.275}
+    ID: 28
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.7, y: 0.275}
+    ID: 31
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.7, y: 0}
+    ID: 32
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.7, y: -0.28}
+    ID: 33
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.54, y: -0.28}
+    ID: 30
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.54, y: 0}
+    ID: 29
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.38, y: 0}
+    ID: 26
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.23, y: 0}
+    ID: 23
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.078, y: 0}
+    ID: 20
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.08, y: 0}
+    ID: 17
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: 0.08, y: -0.27}
+    ID: 18
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.08, y: -0.27}
+    ID: 21
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.23, y: -0.27}
+    ID: 24
+  - cellSize: {x: 0.56, y: 0.1}
+    position: {x: 0.62, y: 0.48}
+    ID: 112
+  - cellSize: {x: 0.56, y: 0.1}
+    position: {x: 0, y: 0.48}
+    ID: 212
+  - cellSize: {x: 0.56, y: 0.1}
+    position: {x: -0.61, y: 0.48}
+    ID: 312
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: -0.77, y: 0.61}
+    ID: 1936
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: -0.47, y: 0.61}
+    ID: odd
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: -0.15, y: 0.61}
+    ID: black
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: 0.16, y: 0.61}
+    ID: red
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: 0.47, y: 0.61}
+    ID: even
+  - cellSize: {x: 0.26, y: 0.1}
+    position: {x: 0.77, y: 0.61}
+    ID: 118
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -0.38, y: -0.27}
+    ID: 27
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -1.01, y: -0.27}
+    ID: 336
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -1.01, y: 0}
+    ID: 235
+  - cellSize: {x: 0.14, y: 0.25}
+    position: {x: -1.01, y: 0.27}
+    ID: 134
