@@ -9,19 +9,19 @@ namespace RouletteGame.Models
     [Serializable]
     public class ChipManager
     {
-        [SerializeField] private float _currentBalance;
-        [SerializeField] private float _selectedChipValue;
+        private decimal _currentBalance;
+        private decimal _selectedChipValue;
 
         // Mevcut çip değerleri
-        public static readonly float[] AvailableChipValues = { 1f, 5f, 10f, 25f, 50f, 100f };
+        public static readonly decimal[] AvailableChipValues = { 1, 5, 10, 25, 50, 100 };
 
-        public float CurrentBalance => _currentBalance;
-        public float SelectedChipValue => _selectedChipValue;
+        public decimal CurrentBalance => _currentBalance;
+        public decimal SelectedChipValue => _selectedChipValue;
 
-        public event Action<float> OnBalanceChanged;
-        public event Action<float> OnChipValueChanged;
+        public event Action<decimal> OnBalanceChanged;
+        public event Action<decimal> OnChipValueChanged;
 
-        public ChipManager(float initialBalance = 1000f)
+        public ChipManager(decimal initialBalance = 1000m)
         {
             _currentBalance = initialBalance;
             _selectedChipValue = AvailableChipValues[0]; // Default olarak en küçük çip
@@ -32,9 +32,9 @@ namespace RouletteGame.Models
         /// </summary>
         /// <param name="chipValue">Seçilecek çip değeri</param>
         /// <returns>Seçim başarılı mı</returns>
-        public bool SelectChipValue(float chipValue)
+        public bool SelectChipValue(decimal chipValue)
         {
-            bool isValidChip = Array.Exists(AvailableChipValues, value => Mathf.Approximately(value, chipValue));
+            bool isValidChip = Array.Exists(AvailableChipValues, value => value==chipValue);
             
             if (isValidChip)
             {
@@ -52,7 +52,7 @@ namespace RouletteGame.Models
         /// </summary>
         /// <param name="amount">Düşülecek miktar</param>
         /// <returns>İşlem başarılı mı</returns>
-        public bool DeductChips(float amount)
+        public bool DeductChips(decimal amount)
         {
             if (amount <= 0)
             {
@@ -75,7 +75,7 @@ namespace RouletteGame.Models
         /// Bakiyeye çip ekler (kazanç)
         /// </summary>
         /// <param name="amount">Eklenecek miktar</param>
-        public void AddChips(float amount)
+        public void AddChips(decimal amount)
         {
             if (amount <= 0)
             {
@@ -90,7 +90,7 @@ namespace RouletteGame.Models
         /// <summary>
         /// Bakiyeyi sıfırlar
         /// </summary>
-        public void ResetBalance(float newBalance = 1000f)
+        public void ResetBalance(decimal newBalance = 1000m)
         {
             _currentBalance = newBalance;
             OnBalanceChanged?.Invoke(_currentBalance);
@@ -101,7 +101,7 @@ namespace RouletteGame.Models
         /// </summary>
         /// <param name="amount">Bahis miktarı</param>
         /// <returns>Bahis yapılabilir mi</returns>
-        public bool CanPlaceBet(float amount)
+        public bool CanPlaceBet(decimal amount)
         {
             return amount > 0 && _currentBalance >= amount;
         }

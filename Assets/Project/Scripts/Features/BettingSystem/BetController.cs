@@ -32,12 +32,13 @@ namespace RouletteGame.Models
         {
             areaSelector.OnSelectArea -= AreaSelectorOnSelectArea;
         }
+
         private void AreaSelectorOnSelectArea(string signal)
         {
-            var bet = RouletteSignalParser.ParseSignal(signal);
-            if (bet.Category == "Straight")
+            var bet = SignalBetFactory.CreateBetFromSignal(signal, _chipManager.SelectedChipValue); // 2. sütun
+            if (bet != null)
             {
-                _bettingSystem.AddBet(new StraightBet(_chipManager.SelectedChipValue,bet.CoveredNumbers,bet.Multiplier, bet.BetType));
+                _bettingSystem.AddBet(bet);
             }
         }
     }

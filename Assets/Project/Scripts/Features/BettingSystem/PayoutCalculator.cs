@@ -15,7 +15,7 @@ namespace RouletteGame.Models
         /// <param name="bets">Bahisler listesi</param>
         /// <param name="winningNumber">Kazanan sayı</param>
         /// <returns>Toplam ödeme miktarı</returns>
-        public float CalculateTotalPayout(List<IBet> bets, int winningNumber)
+        public decimal CalculateTotalPayout(List<IBet> bets, int winningNumber)
         {
             return bets.Sum(bet => bet.CalculatePayout(winningNumber));
         }
@@ -48,7 +48,7 @@ namespace RouletteGame.Models
         /// <param name="bets">Bahisler listesi</param>
         /// <param name="winningNumber">Kazanan sayı</param>
         /// <returns>Toplam kaybedilen miktar</returns>
-        public float CalculateTotalLoss(List<IBet> bets, int winningNumber)
+        public decimal CalculateTotalLoss(List<IBet> bets, int winningNumber)
         {
             var losingBets = GetLosingBets(bets, winningNumber);
             return losingBets.Sum(bet => bet.BetAmount);
@@ -60,10 +60,10 @@ namespace RouletteGame.Models
         /// <param name="bets">Bahisler listesi</param>
         /// <param name="winningNumber">Kazanan sayı</param>
         /// <returns>Net kar/zarar</returns>
-        public float CalculateNetProfitLoss(List<IBet> bets, int winningNumber)
+        public decimal CalculateNetProfitLoss(List<IBet> bets, int winningNumber)
         {
-            float totalPayout = CalculateTotalPayout(bets, winningNumber);
-            float totalLoss = CalculateTotalLoss(bets, winningNumber);
+            decimal totalPayout = CalculateTotalPayout(bets, winningNumber);
+            decimal totalLoss = CalculateTotalLoss(bets, winningNumber);
             return totalPayout - totalLoss;
         }
     }

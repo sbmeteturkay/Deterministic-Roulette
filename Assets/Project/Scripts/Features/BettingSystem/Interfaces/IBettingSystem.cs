@@ -16,7 +16,7 @@ namespace RouletteGame.Interfaces
         /// <summary>
         /// Toplam bahis miktarı
         /// </summary>
-        float TotalBetAmount { get; }
+        decimal TotalBetAmount { get; }
         
         /// <summary>
         /// Bahis eklendiğinde tetiklenen olay

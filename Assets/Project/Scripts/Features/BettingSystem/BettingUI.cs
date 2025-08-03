@@ -30,7 +30,7 @@ namespace RouletteGame.Views
         //private List<GameObject> _betIndicators = new List<GameObject>();
 
         public System.Action OnSpinRequested;
-        public System.Action<float> OnChipValueSelected;
+        public System.Action<decimal> OnChipValueSelected;
 
         public void Initialize(ChipManager chipManager, IBettingSystem bettingSystem)
         {
@@ -73,7 +73,7 @@ namespace RouletteGame.Views
         {
             for (int i = 0; i < _chipButtons.Length && i < ChipManager.AvailableChipValues.Length; i++)
             {
-                float chipValue = ChipManager.AvailableChipValues[i];
+                decimal chipValue = ChipManager.AvailableChipValues[i];
                 int index = i; // Closure için local copy
 
                 _chipButtons[i].onClick.AddListener(() => SelectChip(chipValue));
@@ -103,7 +103,7 @@ namespace RouletteGame.Views
             }
         }
 
-        private void SelectChip(float chipValue)
+        private void SelectChip(decimal chipValue)
         {
             _chipManager.SelectChipValue(chipValue);
             OnChipValueSelected?.Invoke(chipValue);
@@ -119,7 +119,7 @@ namespace RouletteGame.Views
             OnSpinRequested?.Invoke();
         }
 
-        private void UpdateBalanceDisplay(float balance)
+        private void UpdateBalanceDisplay(decimal balance)
         {
             if (_balanceText != null)
             {
@@ -127,7 +127,7 @@ namespace RouletteGame.Views
             }
         }
 
-        private void UpdateSelectedChipDisplay(float chipValue)
+        private void UpdateSelectedChipDisplay(decimal chipValue)
         {
             if (_selectedChipText != null)
             {

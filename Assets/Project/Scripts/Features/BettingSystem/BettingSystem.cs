@@ -15,7 +15,7 @@ namespace RouletteGame.Models
         private List<IBet> _activeBets = new();
 
         public List<IBet> ActiveBets => _activeBets.ToList(); // Defensive copy
-        public float TotalBetAmount => _activeBets.Sum(bet => bet.BetAmount);
+        public decimal TotalBetAmount => _activeBets.Sum(bet => bet.BetAmount);
 
         public event Action<IBet> OnBetAdded;
         public event Action<IBet> OnBetRemoved;
