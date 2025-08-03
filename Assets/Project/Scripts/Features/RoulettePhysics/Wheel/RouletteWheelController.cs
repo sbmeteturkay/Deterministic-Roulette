@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 namespace Game.RouletteSystem
 {
@@ -49,7 +50,7 @@ namespace Game.RouletteSystem
 
         public Vector3 GetPocketPosition()
         {
-            return view.GetPocketWorldPosition(model.PocketDefinitions[selectedPocked].Number);
+            return view.GetPocketWorldPosition(selectedPocked);
         }
         public float GetBowlRadius()
         {

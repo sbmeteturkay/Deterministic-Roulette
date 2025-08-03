@@ -9,13 +9,13 @@ namespace Game.RouletteSystem
     {
         private RouletteWheelController rouletteWheelController;
         private RouletteBallView rouletteBallView;
-        public event Action<int> OnRouletteBallInPocket;
+        public event Action OnRouletteBallInPocket;
         public RouletteBallController(RouletteWheelController rouletteWheelController, RouletteBallView rouletteBallView)
         {
             this.rouletteWheelController = rouletteWheelController;
             this.rouletteBallView = rouletteBallView;
         }
-        public IEnumerator StartSpinBall(int targetPocketNumber)
+        public IEnumerator StartSpinBall()
         {
             var rouletteBall = rouletteBallView.rouletteBall;
             
@@ -47,9 +47,9 @@ namespace Game.RouletteSystem
                 yield return null;
             }
 
-            yield return BallJumpIntoPocket(targetPocketNumber);
+            yield return BallJumpIntoPocket();
         }
-        private IEnumerator BallJumpIntoPocket(int targetPocketNumber)
+        private IEnumerator BallJumpIntoPocket()
         {
             var rouletteBall = rouletteBallView.rouletteBall;
 
@@ -70,8 +70,8 @@ namespace Game.RouletteSystem
                 Vector3 nextWaypoint = currentPos + toTarget * frac;
 
                 // Yükseklik rastgele (arc)
-                float height = Random.Range(0f, .2f);
-                float durationThis = Mathf.Max(0.01f, height * 2f); // sıfır süreden kaçın
+                float height = Random.Range(.1f, .2f);
+                float durationThis = Mathf.Max(0.1f, height * 2f); // sıfır süreden kaçın
                 float time = 0f;
 
                 while (time < durationThis)
@@ -91,9 +91,11 @@ namespace Game.RouletteSystem
 
             // Son olarak (hedef çok hareket ettiyse) güncel hedefe zıplama yapmadan yerleştir
             Vector3 finalTarget = rouletteWheelController.GetPocketPosition();
+            //cebe oturt
+            finalTarget.y -= .01f;
             rouletteBall.transform.position = finalTarget;
             
-            OnRouletteBallInPocket?.Invoke(targetPocketNumber);
+            OnRouletteBallInPocket?.Invoke();
         }
 
     }

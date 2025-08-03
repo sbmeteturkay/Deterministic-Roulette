@@ -30,9 +30,9 @@ namespace Game.RouletteSystem
             rouletteBallController.OnRouletteBallInPocket -= RouletteBallControllerOnOnRouletteBallInPocket;
         }
 
-        private void RouletteBallControllerOnOnRouletteBallInPocket(int outcome)
+        private void RouletteBallControllerOnOnRouletteBallInPocket()
         {
-            OnRouletteBallInPocket?.Invoke(outcome);
+            OnRouletteBallInPocket?.Invoke(targetNumber);
         }
 
         public void Spin()
@@ -49,7 +49,7 @@ namespace Game.RouletteSystem
         {
             targetNumber = _useRandomNumber?rouletteWheelController.GetRandomPocketNumber():targetNumber;
             rouletteWheelController.SetSelectedPocket(targetNumber);
-            StartCoroutine(rouletteBallController.StartSpinBall(targetNumber));
+            StartCoroutine(rouletteBallController.StartSpinBall());
         }
 
         public void SetTargetOutCome(int number)
