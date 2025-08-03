@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -35,7 +37,7 @@ namespace RouletteGame.Controllers
 
         private void OnNumberSelection(int arg0)
         {
-            OnNumberSelectionChanged?.Invoke(arg0);
+            OnNumberSelectionChanged?.Invoke(int.Parse(_numberSelectionDropdown.options[arg0].text));
             UpdateStatusDisplay();
         }
 
@@ -72,6 +74,13 @@ namespace RouletteGame.Controllers
             }
 
             _numberSelectionDropdown.interactable = isDeterministicMode;
+        }
+
+        public void SetNumbers(List<int> returnNumbers)
+        {
+            _numberSelectionDropdown.ClearOptions();
+            List<string> numbers = returnNumbers.Select(item => item.ToString()).ToList();
+            _numberSelectionDropdown.AddOptions(numbers);
         }
     }
 }

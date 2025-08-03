@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.RouletteSystem
 {
@@ -7,12 +9,13 @@ namespace Game.RouletteSystem
     {
         private RouletteWheelController rouletteWheelController;
         private RouletteBallView rouletteBallView;
+        public event Action<int> OnRouletteBallInPocket;
         public RouletteBallController(RouletteWheelController rouletteWheelController, RouletteBallView rouletteBallView)
         {
             this.rouletteWheelController = rouletteWheelController;
             this.rouletteBallView = rouletteBallView;
         }
-        public IEnumerator StartSpinBall(int randomPocketNumber)
+        public IEnumerator StartSpinBall(int targetPocketNumber)
         {
             var rouletteBall = rouletteBallView.rouletteBall;
             
@@ -44,9 +47,9 @@ namespace Game.RouletteSystem
                 yield return null;
             }
 
-            yield return BallJumpIntoPocket();
+            yield return BallJumpIntoPocket(targetPocketNumber);
         }
-        private IEnumerator BallJumpIntoPocket()
+        private IEnumerator BallJumpIntoPocket(int targetPocketNumber)
         {
             var rouletteBall = rouletteBallView.rouletteBall;
 
@@ -89,6 +92,8 @@ namespace Game.RouletteSystem
             // Son olarak (hedef çok hareket ettiyse) güncel hedefe zıplama yapmadan yerleştir
             Vector3 finalTarget = rouletteWheelController.GetPocketPosition();
             rouletteBall.transform.position = finalTarget;
+            
+            OnRouletteBallInPocket?.Invoke(targetPocketNumber);
         }
 
     }

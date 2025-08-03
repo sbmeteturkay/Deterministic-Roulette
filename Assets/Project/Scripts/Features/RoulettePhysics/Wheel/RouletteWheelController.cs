@@ -1,7 +1,5 @@
 using UnityEngine;
-using System;
 using System.Collections;
-using Random = System.Random;
 
 namespace Game.RouletteSystem
 {
@@ -10,9 +8,6 @@ namespace Game.RouletteSystem
         private readonly IWheelView view;
         private readonly RouletteWheelModelSO model;
 
-        public event Action OnSpinStarted;
-        public event Action OnSpinStopped;
-        
         private int selectedPocked;
         public RouletteWheelController(IWheelView view, RouletteWheelModelSO model)
         {
@@ -27,9 +22,9 @@ namespace Game.RouletteSystem
             float maxDuration = model.MaxSpinDuration;
             float minSpinAngularVelocity = model.MinSpinAngularVelocity;
             float maxSpinAngularVelocity = model.MaxSpinAngularVelocity;
-            float duration = UnityEngine.Random.Range(minDuration, maxDuration);
+            float duration = Random.Range(minDuration, maxDuration);
 
-            float initialAngularVelocity = UnityEngine.Random.Range(minSpinAngularVelocity, maxSpinAngularVelocity);
+            float initialAngularVelocity = Random.Range(minSpinAngularVelocity, maxSpinAngularVelocity);
 
             yield return UpdateRotation(duration,initialAngularVelocity);
         }
@@ -42,9 +37,14 @@ namespace Game.RouletteSystem
         
         public int GetRandomPocketNumber()
         {
-            selectedPocked = model.PocketDefinitions[UnityEngine.Random.Range(0,model.PocketDefinitions.Count)].Number;
+            selectedPocked = model.PocketDefinitions[Random.Range(0,model.PocketDefinitions.Count)].Number;
             Debug.Log("pocket selected: "+selectedPocked);
             return selectedPocked;
+        }
+
+        public void SetSelectedPocket(int pocketNumber)
+        {
+            selectedPocked = pocketNumber;
         }
 
         public Vector3 GetPocketPosition()
@@ -85,8 +85,6 @@ namespace Game.RouletteSystem
 
                 yield return null;
             }
-
-            OnSpinStopped?.Invoke();
         }
 
         
@@ -95,7 +93,5 @@ namespace Game.RouletteSystem
     {
         IEnumerator StartSpin();
         void StopSpin();
-        event Action OnSpinStarted;
-        event Action OnSpinStopped;
     }
 }
