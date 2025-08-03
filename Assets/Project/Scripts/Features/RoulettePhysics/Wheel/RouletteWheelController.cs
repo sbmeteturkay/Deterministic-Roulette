@@ -42,7 +42,7 @@ namespace Game.RouletteSystem
         
         public int GetRandomPocketNumber()
         {
-            selectedPocked = model.PocketDefinitions[UnityEngine.Random.Range(0,model.PocketDefinitions.Count - 1)].Number;
+            selectedPocked = model.PocketDefinitions[UnityEngine.Random.Range(0,model.PocketDefinitions.Count)].Number;
             Debug.Log("pocket selected: "+selectedPocked);
             return selectedPocked;
         }
