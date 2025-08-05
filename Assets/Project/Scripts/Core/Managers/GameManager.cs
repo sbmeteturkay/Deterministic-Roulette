@@ -1,3 +1,4 @@
+using System;
 using Game.RouletteSystem;
 using RouletteGame.Controllers;
 using UnityEngine;
@@ -101,20 +102,20 @@ namespace RouletteGame.Managers
         {
             Debug.Log($"GameManager: Spin tamamlandı, kazanan sayı: {winningNumber}");
 
-            float totalPayout = _payoutCalculator.CalculateTotalPayout(_bettingSystem.ActiveBets, winningNumber);
-            float totalLoss = _payoutCalculator.CalculateTotalLoss(_bettingSystem.ActiveBets, winningNumber);
-            float netProfitLoss = totalPayout - totalLoss;
+            decimal totalPayout = _payoutCalculator.CalculateTotalPayout(_bettingSystem.ActiveBets, winningNumber);
+            decimal totalLoss = _payoutCalculator.CalculateTotalLoss(_bettingSystem.ActiveBets, winningNumber);
+            decimal netProfitLoss = totalPayout - totalLoss;
 
             if (netProfitLoss > 0)
             {
                 _chipManager.AddChips(totalPayout); // Sadece kazanılan miktarı ekle
-                _playerStatsModel.AddWin(netProfitLoss); // Net karı istatistiklere ekle
+                _playerStatsModel.AddWin((float)netProfitLoss); // Net karı istatistiklere ekle
                 Debug.Log($"Kazandınız! Net kazanç: {netProfitLoss:F2}");
             }
             else if (netProfitLoss < 0)
             {
-                _playerStatsModel.AddLoss(Mathf.Abs(netProfitLoss)); // Net kaybı istatistiklere ekle
-                Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs(netProfitLoss):F2}");
+                _playerStatsModel.AddLoss(Mathf.Abs((float)netProfitLoss)); // Net kaybı istatistiklere ekle
+                Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs((float)netProfitLoss):F2}");
             }
             else
             {
@@ -123,6 +124,19 @@ namespace RouletteGame.Managers
 
             _bettingSystem.ClearAllBets(); // Bahisleri temizle
             _bettingUI.SetSpinButtonEnabled(true);
+        }
+
+        private void OnApplicationQuit()
+        {
+            _playerStatsModel.SaveStats();
+        }
+        private void OnApplicationPause(bool isPaused)
+        {
+            // Uygulama duraklatıldığında (örneğin, telefonun ana ekranına dönüldüğünde)
+            if (isPaused)
+            {
+                _playerStatsModel.SaveStats();
+            }
         }
     }
 }
