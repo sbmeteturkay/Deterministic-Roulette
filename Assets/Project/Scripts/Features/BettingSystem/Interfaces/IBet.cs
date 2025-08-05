@@ -84,10 +84,10 @@ namespace RouletteGame.Interfaces
         /// "even","odd" => Even/Odd
         /// "red","black" => Red/Black
         /// </summary>
-        public static IBet? CreateBetFromSignal(string signal, decimal amount)
+        public static IBet CreateBetFromSignal(string signal, decimal amount)
         {
             if (string.IsNullOrWhiteSpace(signal))
-                throw new ArgumentException("Signal boş olamaz.", nameof(signal));
+                return null;
 
             signal = signal.Trim().ToLowerInvariant();
 
