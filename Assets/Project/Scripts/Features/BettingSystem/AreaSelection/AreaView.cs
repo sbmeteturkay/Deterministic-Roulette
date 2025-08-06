@@ -136,18 +136,18 @@ namespace Game.Core.Area
 
                 Rect rect = new Rect(screenCenter - pixelSize / 2f, pixelSize);
 
-                // Hover kontrolü (mouse screen space'te)
-                Vector2 mouse = Event.current.mousePosition;
-                bool isHovered = rect.Contains(mouse);
-
-                // Renk seçimi
-                GUI.color = isHovered ? new Color(1f, 0f, 0f, 0.3f) : new Color(1f, 1f, 0f, 0.15f);
+                // // Hover kontrolü (mouse screen space'te)
+                // Vector2 mouse = Event.current.mousePosition;
+                // bool isHovered = rect.Contains(mouse);
+                //
+                // // Renk seçimi
+                GUI.color = new Color(1f, 1f, 0f, 0.15f);
 
                 GUI.DrawTexture(rect, Texture2D.whiteTexture);
 
                 // ID yazısı (orta üstte)
-                GUI.color = Color.black;
-                GUI.Label(new Rect(rect.x, rect.y - 16, rect.width, 20), area.GetID(), GUI.skin.label);
+                // GUI.color = Color.black;
+                // GUI.Label(new Rect(rect.x, rect.y - 16, rect.width, 20), area.GetID(), GUI.skin.label);
             }
         }
 #if UNITY_EDITOR
