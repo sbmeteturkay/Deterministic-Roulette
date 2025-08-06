@@ -38,7 +38,11 @@ namespace RouletteGame.Managers
 
             _playerStatsModel = new PlayerStatsModel();
             _bettingSystem = new BettingSystem();
-            _chipManager = new ChipManager();
+            if (!PlayerPrefs.HasKey("ChipBalance"))
+            {
+                PlayerPrefs.SetInt("ChipBalance", 100);
+            }
+            _chipManager = new ChipManager(PlayerPrefs.GetInt("ChipBalance"));
             _payoutCalculator = new PayoutCalculator();
 
             // View'ları ve Controller'ları başlat
@@ -81,6 +85,7 @@ namespace RouletteGame.Managers
         private void RouletteControllerOnOnRouletteBallInPocket(int outcomeWinningNumber)
         {
             OnSpinCompleted(outcomeWinningNumber);
+            _betController.HoverWinningBetNumber(outcomeWinningNumber);
         }
 
         private void OnSpinRequested()
@@ -102,9 +107,9 @@ namespace RouletteGame.Managers
         {
             Debug.Log($"GameManager: Spin tamamlandı, kazanan sayı: {winningNumber}");
 
-            decimal totalPayout = _payoutCalculator.CalculateTotalPayout(_bettingSystem.ActiveBets, winningNumber);
-            decimal totalLoss = _payoutCalculator.CalculateTotalLoss(_bettingSystem.ActiveBets, winningNumber);
-            decimal netProfitLoss = totalPayout - totalLoss;
+            int totalPayout = _payoutCalculator.CalculateTotalPayout(_bettingSystem.ActiveBets, winningNumber);
+            int totalLoss = _payoutCalculator.CalculateTotalLoss(_bettingSystem.ActiveBets, winningNumber);
+            int netProfitLoss = totalPayout - totalLoss;
 
             if (netProfitLoss > 0)
             {
@@ -124,11 +129,13 @@ namespace RouletteGame.Managers
 
             _bettingSystem.ClearAllBets(); // Bahisleri temizle
             _bettingUI.SetSpinButtonEnabled(true);
+            
         }
 
         private void OnApplicationQuit()
         {
             _playerStatsModel.SaveStats();
+            PlayerPrefs.SetInt("ChipBalance",_chipManager.CurrentBalance);
         }
         private void OnApplicationPause(bool isPaused)
         {
