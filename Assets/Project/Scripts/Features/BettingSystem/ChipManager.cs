@@ -1,8 +1,21 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RouletteGame.Models
 {
+    [Serializable]
+    public struct Chip
+    {
+        public int value;
+        public Texture icon;
+        
+        public Chip(Texture icon, int value)
+        {
+            this.icon = icon;
+            this.value = value;
+        }
+    }
     /// <summary>
     /// Oyuncunun çip bakiyesini yöneten sınıf
     /// </summary>
@@ -10,10 +23,10 @@ namespace RouletteGame.Models
     public class ChipManager
     {
         private int _currentBalance;
-        private int _selectedChipValue;
+        private int _selectedChipValue=1;
 
         // Mevcut çip değerleri
-        public static readonly int[] AvailableChipValues = { 1, 5, 10, 25, 50, 100 };
+        public List<Chip> AvailableChipValues = new();
 
         public int CurrentBalance => _currentBalance;
         public int SelectedChipValue => _selectedChipValue;
@@ -21,10 +34,9 @@ namespace RouletteGame.Models
         public event Action<int> OnBalanceChanged;
         public event Action<int> OnChipValueChanged;
 
-        public ChipManager(int initialBalance = 1000)
+        public ChipManager( int initialBalance = 1000)
         {
             _currentBalance = initialBalance;
-            _selectedChipValue = AvailableChipValues[0]; // Default olarak en küçük çip
         }
 
         /// <summary>
@@ -34,7 +46,7 @@ namespace RouletteGame.Models
         /// <returns>Seçim başarılı mı</returns>
         public bool SelectChipValue(int chipValue)
         {
-            bool isValidChip = Array.Exists(AvailableChipValues, value => value==chipValue);
+            bool isValidChip = AvailableChipValues.Exists(x => x.value == chipValue);
             
             if (isValidChip)
             {

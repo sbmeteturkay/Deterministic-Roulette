@@ -38,7 +38,7 @@ namespace Game.Core.Area
             return point.x >= -halfW+areaWorldPoint.x && point.x <= halfW+areaWorldPoint.x && point.z >= -halfD+areaWorldPoint.z && point.z <= halfD+areaWorldPoint.z;
         }
 
-        private Vector3 AreaWorldPoint(Area area)
+        public Vector3 AreaWorldPoint(Area area)
         {
             return new Vector3(area.GetPosition().x, 0, area.GetPosition().y) + transform.position;
         }

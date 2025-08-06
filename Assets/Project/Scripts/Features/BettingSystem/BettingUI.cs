@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using RouletteGame.Models;
 using RouletteGame.Interfaces;
+using UnityEngine.Serialization;
 
 namespace RouletteGame.Views
 {
@@ -12,7 +16,7 @@ namespace RouletteGame.Views
     public class BettingUI : MonoBehaviour
     {
         [Header("Chip Selection")]
-        [SerializeField] private Button[] _chipButtons;
+        [SerializeField] private ToggleGroup _chipGroup;
         [SerializeField] private TextMeshProUGUI _selectedChipText;
         [SerializeField] private TextMeshProUGUI _balanceText;
 
@@ -21,18 +25,29 @@ namespace RouletteGame.Views
         [SerializeField] private Button _spinButton;
         [SerializeField] private TextMeshProUGUI _totalBetText;
 
-        //[Header("Betting Table")]
-        //[SerializeField] private Transform _bettingTableParent;
-        //[SerializeField] private GameObject _betIndicatorPrefab;
-
         private ChipManager _chipManager;
-        private IBettingSystem _bettingSystem;
-        //private List<GameObject> _betIndicators = new List<GameObject>();
+        private BettingSystem _bettingSystem;
+        private List<Toggle> _chipSelectionToggles=new();
 
-        public System.Action OnSpinRequested;
-        public System.Action<decimal> OnChipValueSelected;
+        public Action OnSpinRequested;
+        [HideInInspector]
+        public List<int> predefinedChipValues = new() { 1, 5, 10, 25, 50, 100 };
 
-        public void Initialize(ChipManager chipManager, IBettingSystem bettingSystem)
+        private Camera _camera;
+
+        private void Start()
+        {
+            _camera = Camera.main;
+        }
+
+        private void Awake()
+        {
+            _chipSelectionToggles= _chipGroup.GetComponentsInChildren<Toggle>()
+                .Where(t => t.group == _chipGroup)
+                .ToList();
+        }
+
+        public void Initialize(ChipManager chipManager, BettingSystem bettingSystem)
         {
             _chipManager = chipManager;
             _bettingSystem = bettingSystem;
@@ -69,21 +84,22 @@ namespace RouletteGame.Views
             }
         }
 
+        public List<Toggle> GetChipSelectionToggles()
+        {
+            return _chipSelectionToggles;
+        }
         private void SetupChipButtons()
         {
-            for (int i = 0; i < _chipButtons.Length && i < ChipManager.AvailableChipValues.Length; i++)
-            {
-                int chipValue = ChipManager.AvailableChipValues[i];
-                int index = i; // Closure için local copy
 
-                _chipButtons[i].onClick.AddListener(() => SelectChip(chipValue));
+            for (int i = 0; i < _chipSelectionToggles.Count; i++)
+            {
+                int chipValue = _chipManager.AvailableChipValues[i].value;
                 
-                // Button text'ini güncelle
-                var buttonText = _chipButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                if (buttonText != null)
+                _chipSelectionToggles[i].onValueChanged.AddListener((x) =>
                 {
-                    buttonText.text = chipValue.ToString("F0");
-                }
+                    if (x)
+                        SelectChip(chipValue);
+                });
             }
         }
 
@@ -106,12 +122,12 @@ namespace RouletteGame.Views
         private void SelectChip(int chipValue)
         {
             _chipManager.SelectChipValue(chipValue);
-            OnChipValueSelected?.Invoke(chipValue);
         }
 
         private void ClearAllBets()
         {
             _bettingSystem.ClearAllBets();
+            _bettingSystem.ClearCoveredBetNumbers();
         }
 
         private void RequestSpin()
@@ -192,6 +208,47 @@ namespace RouletteGame.Views
             if (_spinButton != null)
             {
                 _spinButton.interactable = enabled;
+            }
+        }
+
+        private void OnGUI()
+        {
+            if (_bettingSystem.ActiveBets.Count == 0)
+                return;
+
+            // 1. Aynı pozisyondaki bet'leri grupla
+            var groupedBets = _bettingSystem.ActiveBets
+                .GroupBy(b => b.chipPosition)
+                .ToList();
+
+            foreach (var group in groupedBets)
+            {
+                // Ortak ekran pozisyonu
+                Vector3 screenPos = _camera.WorldToScreenPoint(group.Key);
+                if (screenPos.z < 0) continue; // Kamera arkasında ise çizme
+
+                float guiY = Screen.height - screenPos.y;
+
+                int stackIndex = 0;
+                foreach (var activeBet in group)
+                {
+                    var chip = _chipManager.AvailableChipValues
+                        .Find(x => x.value == activeBet.BetAmount);
+
+                    // Stack efekti (küçültme veya offset)
+                    float offset = stackIndex * 3f;
+                    float size = 25f; // veya stackIndex'e göre değiştirilebilir
+
+                    Rect rect = new Rect(
+                        screenPos.x - size / 2f,
+                        guiY - size / 2f - offset,
+                        size,
+                        size
+                    );
+
+                    GUI.DrawTexture(rect, chip.icon);
+                    stackIndex++;
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Game.Core.Area
         [SerializeField] AreaView _areaView;
         [SerializeField] private LayerMask tableMask; // masanın collider'ı burada olmalı
         private Camera camera1;
-        public event Action<string> OnSelectArea;
+        public event Action<Area> OnSelectArea;
 
         private void Start()
         {
@@ -25,7 +25,7 @@ namespace Game.Core.Area
                 if (Physics.Raycast(ray, out RaycastHit hit, 10, tableMask))
                 {
                     // Masaya çarptı, hangi alansa bul
-                    OnSelectArea?.Invoke(_areaView.TryGetAreaFromPosition(hit.point)?.GetID());
+                    OnSelectArea?.Invoke(_areaView.TryGetAreaFromPosition(hit.point));
                 }
             }
         }
@@ -38,6 +38,11 @@ namespace Game.Core.Area
         public void SetHoveredArea(int hoveredAreaNumber)
         {
             _areaView.SetHoveredArea(hoveredAreaNumber);
+        }
+
+        public Vector3 GetWorldPositionFromArea(Area area)
+        {
+            return _areaView.AreaWorldPoint(area);
         }
     }
 }

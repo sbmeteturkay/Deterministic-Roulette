@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace RouletteGame.Interfaces
 {
@@ -40,6 +41,7 @@ namespace RouletteGame.Interfaces
         IReadOnlyList<int> CoveredNumbers { get; }
         string BetType { get; }
         int PayoutMultiplier { get; }
+        Vector3 chipPosition { get; set; }
 
         bool IsWinning(int winningNumber);
         /// <summary>
@@ -54,6 +56,8 @@ namespace RouletteGame.Interfaces
         public IReadOnlyList<int> CoveredNumbers { get;  set; }
         public string BetType { get;  set; }
         public int PayoutMultiplier { get;  set; }
+        
+        public Vector3 chipPosition { get;  set; }
 
         protected BaseBet(int betAmount, IEnumerable<int> coveredNumbers, int payoutMultiplier, string betType)
         {

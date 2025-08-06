@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Game.Core.Area;
 using Game.RouletteSystem;
 using RouletteGame.Controllers;
 using UnityEngine;
@@ -12,9 +14,10 @@ namespace RouletteGame.Managers
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        private BettingSystem _bettingSystem;
+
         [Header("Models")]
-        [SerializeField] private PlayerStatsModel _playerStatsModel;
-        [SerializeField] private BettingSystem _bettingSystem;
+        private PlayerStatsModel _playerStatsModel;
         [SerializeField] private ChipManager _chipManager;
         
         [Header("Views")]
@@ -22,10 +25,11 @@ namespace RouletteGame.Managers
         [SerializeField] private BettingUI _bettingUI;
 
         [Header("Controllers")]
-        [SerializeField] private DeterministicOutcomeSelector _deterministicOutcomeSelector;
-        [SerializeField] private BetController _betController;
         [SerializeField] private RouletteController rouletteController;
-
+        
+        [Header("Other")]
+        [SerializeField] private DeterministicOutcomeSelector _deterministicOutcomeSelector;
+        [SerializeField] private AreaSelector _areaSelector;
         // Diğer yardımcı sınıflar
         private PayoutCalculator _payoutCalculator;
 
@@ -42,14 +46,23 @@ namespace RouletteGame.Managers
             {
                 PlayerPrefs.SetInt("ChipBalance", 100);
             }
+
             _chipManager = new ChipManager(PlayerPrefs.GetInt("ChipBalance"));
+            //add chip values to chip manager
+            var list = _bettingUI.GetChipSelectionToggles();
+            for (var i = 0; i < list.Count; i++)
+            {
+                var chipSelection = list[i];
+                _chipManager.AvailableChipValues.Add(new Chip(chipSelection.targetGraphic.mainTexture,
+                    _bettingUI.predefinedChipValues[i]));
+            }
+            
             _payoutCalculator = new PayoutCalculator();
 
             // View'ları ve Controller'ları başlat
             _playerStatsView.Initialize(_playerStatsModel);
+            _bettingSystem.Initialize(_chipManager,_areaSelector);
             _bettingUI.Initialize(_chipManager, _bettingSystem);
-            _betController.Initialize(_chipManager, _bettingSystem);
-
 
             _deterministicOutcomeSelector.SetNumbers(rouletteController.ReturnNumbers());
 
@@ -60,6 +73,8 @@ namespace RouletteGame.Managers
             _deterministicOutcomeSelector.OnNumberSelectionChanged += DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
             
             rouletteController.OnRouletteBallInPocket += RouletteControllerOnOnRouletteBallInPocket;
+
+
         }
 
  
@@ -85,7 +100,7 @@ namespace RouletteGame.Managers
         private void RouletteControllerOnOnRouletteBallInPocket(int outcomeWinningNumber)
         {
             OnSpinCompleted(outcomeWinningNumber);
-            _betController.HoverWinningBetNumber(outcomeWinningNumber);
+            _bettingSystem.HoverWinningBetNumber(outcomeWinningNumber);
         }
 
         private void OnSpinRequested()
@@ -114,13 +129,13 @@ namespace RouletteGame.Managers
             if (netProfitLoss > 0)
             {
                 _chipManager.AddChips(totalPayout); // Sadece kazanılan miktarı ekle
-                _playerStatsModel.AddWin((float)netProfitLoss); // Net karı istatistiklere ekle
+                _playerStatsModel.AddWin(netProfitLoss); // Net karı istatistiklere ekle
                 Debug.Log($"Kazandınız! Net kazanç: {netProfitLoss:F2}");
             }
             else if (netProfitLoss < 0)
             {
-                _playerStatsModel.AddLoss(Mathf.Abs((float)netProfitLoss)); // Net kaybı istatistiklere ekle
-                Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs((float)netProfitLoss):F2}");
+                _playerStatsModel.AddLoss(Mathf.Abs(netProfitLoss)); // Net kaybı istatistiklere ekle
+                Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs(netProfitLoss):F2}");
             }
             else
             {
@@ -145,6 +160,7 @@ namespace RouletteGame.Managers
                 _playerStatsModel.SaveStats();
             }
         }
+
     }
 }
 
