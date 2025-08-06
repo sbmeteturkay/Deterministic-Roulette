@@ -30,6 +30,9 @@ namespace Game.RouletteSystem
             var angleDeg = 0f;
             
             var elapsedTime = 0f;
+            
+            rouletteBall.transform.parent = rouletteBallView.transform;
+
             while (elapsedTime < duration)
             {
                 elapsedTime += Time.deltaTime;
@@ -54,11 +57,14 @@ namespace Game.RouletteSystem
             var rouletteBall = rouletteBallView.rouletteBall;
 
             // Toplam zıplama sayısı
-            int jumps = Random.Range(1, 5);
+            int jumps = Random.Range(3, 6);
 
             // Her zıplamada hedef yeniden hesaplanacak
             for (int i = 0; i < jumps; i++)
             {
+                if (i >1)
+                    rouletteBall.transform.parent = rouletteWheelController.GetWheelCenter();
+                
                 Vector3 currentPos = rouletteBall.transform.position;
                 Vector3 target = rouletteWheelController.GetPocketPosition();
                 Vector3 toTarget = target - currentPos;
@@ -70,12 +76,19 @@ namespace Game.RouletteSystem
                 Vector3 nextWaypoint = currentPos + toTarget * frac;
 
                 // Yükseklik rastgele (arc)
-                float height = Random.Range(.1f, .2f);
-                float durationThis = Mathf.Max(0.1f, height * 2f); // sıfır süreden kaçın
+                float height = Random.Range(.1f, .3f);
+                float durationThis = Mathf.Max(0.4f, height * 2f); // sıfır süreden kaçın
                 float time = 0f;
 
                 while (time < durationThis)
                 {
+                    if (i == jumps - 1)
+                    {
+                        // //cebe oturt
+                        target = rouletteWheelController.GetPocketPosition();
+                        toTarget = target - currentPos;
+                        nextWaypoint = currentPos + toTarget * frac;
+                    }
                     time += Time.deltaTime;
                     float normalized = Mathf.Clamp01(time / durationThis);
                     float arc = 4f * height * normalized * (1f - normalized);
@@ -84,17 +97,7 @@ namespace Game.RouletteSystem
                     yield return null;
                 }
 
-                // Kesinleştir
-                rouletteBall.transform.parent = rouletteWheelController.GetWheelCenter();
-                rouletteBall.transform.position = nextWaypoint;
             }
-
-            // Son olarak (hedef çok hareket ettiyse) güncel hedefe zıplama yapmadan yerleştir
-            Vector3 finalTarget = rouletteWheelController.GetPocketPosition();
-            //cebe oturt
-            finalTarget.y -= .01f;
-            rouletteBall.transform.position = finalTarget;
-            
             OnRouletteBallInPocket?.Invoke();
         }
 
