@@ -36,26 +36,26 @@ namespace RouletteGame.Interfaces
 
     public interface IBet
     {
-        decimal BetAmount { get; }
+        int BetAmount { get; }
         IReadOnlyList<int> CoveredNumbers { get; }
         string BetType { get; }
-        decimal PayoutMultiplier { get; }
+        int PayoutMultiplier { get; }
 
         bool IsWinning(int winningNumber);
         /// <summary>
         /// Bahis miktarı dahil toplam ödeme (örn: eşleşme varsa betAmount * multiplier)
         /// </summary>
-        decimal CalculatePayout(int winningNumber);
+        int CalculatePayout(int winningNumber);
     }
 
     public abstract class BaseBet : IBet
     {
-        public decimal BetAmount { get; set; }
+        public int BetAmount { get; set; }
         public IReadOnlyList<int> CoveredNumbers { get;  set; }
         public string BetType { get;  set; }
-        public decimal PayoutMultiplier { get;  set; }
+        public int PayoutMultiplier { get;  set; }
 
-        protected BaseBet(decimal betAmount, IEnumerable<int> coveredNumbers, decimal payoutMultiplier, string betType)
+        protected BaseBet(int betAmount, IEnumerable<int> coveredNumbers, int payoutMultiplier, string betType)
         {
             if (betAmount <= 0) throw new ArgumentException("Bahis miktarı sıfırdan büyük olmalı.", nameof(betAmount));
             BetAmount = betAmount;
@@ -66,9 +66,9 @@ namespace RouletteGame.Interfaces
 
         public abstract bool IsWinning(int winningNumber);
 
-        public virtual decimal CalculatePayout(int winningNumber)
+        public virtual int CalculatePayout(int winningNumber)
         {
-            return IsWinning(winningNumber) ? BetAmount * PayoutMultiplier : 0m;
+            return IsWinning(winningNumber) ? BetAmount * PayoutMultiplier : 0;
         }
     }
     public static class SignalBetFactory
@@ -84,7 +84,7 @@ namespace RouletteGame.Interfaces
         /// "even","odd" => Even/Odd
         /// "red","black" => Red/Black
         /// </summary>
-        public static IBet CreateBetFromSignal(string signal, decimal amount)
+        public static IBet CreateBetFromSignal(string signal, int amount)
         {
             if (string.IsNullOrWhiteSpace(signal))
                 return null;
@@ -135,8 +135,8 @@ namespace RouletteGame.Interfaces
     }
     public class StraightBet : BaseBet
     {
-        public StraightBet(decimal betAmount, int number)
-            : base(betAmount, new[] { number }, 35m, "Straight") // 35:1 genelde
+        public StraightBet(int betAmount, int number)
+            : base(betAmount, new[] { number }, 35, "Straight") // 35:1 genelde
         { }
 
         public override bool IsWinning(int winningNumber)
@@ -147,8 +147,8 @@ namespace RouletteGame.Interfaces
 
     public class SplitBet : BaseBet
     {
-        public SplitBet(decimal betAmount, int numberA, int numberB)
-            : base(betAmount, new[] { numberA, numberB }, 17m, "Split") // 17:1
+        public SplitBet(int betAmount, int numberA, int numberB)
+            : base(betAmount, new[] { numberA, numberB }, 17, "Split") // 17:1
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -156,8 +156,8 @@ namespace RouletteGame.Interfaces
 
     public class StreetBet : BaseBet
     {
-        public StreetBet(decimal betAmount, IEnumerable<int> threeNumbers)
-            : base(betAmount, threeNumbers, 11m, "Street") // 11:1
+        public StreetBet(int betAmount, IEnumerable<int> threeNumbers)
+            : base(betAmount, threeNumbers, 11, "Street") // 11:1
         {
             if (CoveredNumbers.Count != 3) throw new ArgumentException("Street bet 3 sayı içermeli.");
         }
@@ -167,8 +167,8 @@ namespace RouletteGame.Interfaces
 
     public class CornerBet : BaseBet
     {
-        public CornerBet(decimal betAmount, IEnumerable<int> fourNumbers)
-            : base(betAmount, fourNumbers, 8m, "Corner") // 8:1
+        public CornerBet(int betAmount, IEnumerable<int> fourNumbers)
+            : base(betAmount, fourNumbers, 8, "Corner") // 8:1
         {
             if (CoveredNumbers.Count != 4) throw new ArgumentException("Corner bet 4 sayı içermeli.");
         }
@@ -178,8 +178,8 @@ namespace RouletteGame.Interfaces
 
     public class LineBet : BaseBet // Six Line
     {
-        public LineBet(decimal betAmount, IEnumerable<int> sixNumbers)
-            : base(betAmount, sixNumbers, 5m, "Line") // 5:1
+        public LineBet(int betAmount, IEnumerable<int> sixNumbers)
+            : base(betAmount, sixNumbers, 5, "Line") // 5:1
         {
             if (CoveredNumbers.Count != 6) throw new ArgumentException("Line bet 6 sayı içermeli.");
         }
@@ -197,8 +197,8 @@ namespace RouletteGame.Interfaces
             { Dozen.Third, Enumerable.Range(25,12).ToArray() }
         };
 
-        public DozenBet(decimal betAmount, Dozen which)
-            : base(betAmount, Ranges[which], 2m, "Dozen") // 2:1
+        public DozenBet(int betAmount, Dozen which)
+            : base(betAmount, Ranges[which], 2, "Dozen") // 2:1
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -214,8 +214,8 @@ namespace RouletteGame.Interfaces
             { 3, Enumerable.Range(1, 12).Select(i => (i - 1) * 3 + 3).ToArray() }
         };
 
-        public ColumnBet(decimal betAmount, int columnIndex)
-            : base(betAmount, Columns[columnIndex], 2m, "Column") // 2:1
+        public ColumnBet(int betAmount, int columnIndex)
+            : base(betAmount, Columns[columnIndex], 2, "Column") // 2:1
         {
             if (columnIndex < 1 || columnIndex > 3) throw new ArgumentOutOfRangeException(nameof(columnIndex));
         }
@@ -227,12 +227,12 @@ namespace RouletteGame.Interfaces
     {
         public enum Choice { Even, Odd }
 
-        public EvenOddBet(decimal betAmount, Choice choice)
+        public EvenOddBet(int betAmount, Choice choice)
             : base(betAmount,
                   choice == Choice.Even
                       ? Enumerable.Range(1, 36).Where(n => NumberProperties.IsEven(n)).ToArray()
                       : Enumerable.Range(1, 36).Where(n => NumberProperties.IsOdd(n)).ToArray(),
-                  1m, "EvenOdd") // 1:1
+                  1, "EvenOdd") // 1:1
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -242,12 +242,12 @@ namespace RouletteGame.Interfaces
     {
         public enum Choice { Red, Black }
 
-        public RedBlackBet(decimal betAmount, Choice choice)
+        public RedBlackBet(int betAmount, Choice choice)
             : base(betAmount,
                   choice == Choice.Red
                       ? Enumerable.Range(1, 36).Where(n => NumberProperties.GetColor(n) == RouletteColor.Red).ToArray()
                       : Enumerable.Range(1, 36).Where(n => NumberProperties.GetColor(n) == RouletteColor.Black).ToArray(),
-                  1m, "RedBlack") // 1:1
+                  1, "RedBlack") // 1:1
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -257,12 +257,12 @@ namespace RouletteGame.Interfaces
     {
         public enum Choice { High, Low }
 
-        public HighLowBet(decimal betAmount, Choice choice)
+        public HighLowBet(int betAmount, Choice choice)
             : base(betAmount,
                   choice == Choice.Low
                       ? Enumerable.Range(1, 18).ToArray()
                       : Enumerable.Range(19, 18).ToArray(),
-                  1m, "HighLow") // 1:1
+                  1, "HighLow") // 1:1
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -271,8 +271,8 @@ namespace RouletteGame.Interfaces
     public class BasketBet : BaseBet
     {
         // Amerikan ruletinde 0, 00(-1), 1,2,3 ortak bahis (5 number)
-        public BasketBet(decimal betAmount)
-            : base(betAmount, new[] { 0, -1, 1, 2, 3 }, 6m, "Basket") // 6:1 (oyun varyasyonuna göre değişebilir)
+        public BasketBet(int betAmount)
+            : base(betAmount, new[] { 0, -1, 1, 2, 3 }, 6, "Basket") // 6:1 (oyun varyasyonuna göre değişebilir)
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);
@@ -282,8 +282,8 @@ namespace RouletteGame.Interfaces
     public class SnakeBet : BaseBet
     {
         private static readonly int[] SnakeNumbers = { 1,5,9,12,14,16,19,23,27,30,32,34 }; // klasik snake
-        public SnakeBet(decimal betAmount)
-            : base(betAmount, SnakeNumbers, 2m, "Snake") // genelde 2:1 gibi olur (fareli olabilir)
+        public SnakeBet(int betAmount)
+            : base(betAmount, SnakeNumbers, 2, "Snake") // genelde 2:1 gibi olur (fareli olabilir)
         { }
 
         public override bool IsWinning(int winningNumber) => CoveredNumbers.Contains(winningNumber);

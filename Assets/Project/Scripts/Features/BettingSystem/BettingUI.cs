@@ -73,7 +73,7 @@ namespace RouletteGame.Views
         {
             for (int i = 0; i < _chipButtons.Length && i < ChipManager.AvailableChipValues.Length; i++)
             {
-                decimal chipValue = ChipManager.AvailableChipValues[i];
+                int chipValue = ChipManager.AvailableChipValues[i];
                 int index = i; // Closure için local copy
 
                 _chipButtons[i].onClick.AddListener(() => SelectChip(chipValue));
@@ -103,7 +103,7 @@ namespace RouletteGame.Views
             }
         }
 
-        private void SelectChip(decimal chipValue)
+        private void SelectChip(int chipValue)
         {
             _chipManager.SelectChipValue(chipValue);
             OnChipValueSelected?.Invoke(chipValue);
@@ -119,7 +119,7 @@ namespace RouletteGame.Views
             OnSpinRequested?.Invoke();
         }
 
-        private void UpdateBalanceDisplay(decimal balance)
+        private void UpdateBalanceDisplay(int balance)
         {
             if (_balanceText != null)
             {
@@ -127,7 +127,7 @@ namespace RouletteGame.Views
             }
         }
 
-        private void UpdateSelectedChipDisplay(decimal chipValue)
+        private void UpdateSelectedChipDisplay(int chipValue)
         {
             if (_selectedChipText != null)
             {
