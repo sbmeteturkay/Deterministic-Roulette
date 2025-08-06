@@ -14,13 +14,12 @@ namespace Game.RouletteSystem
         [SerializeField, Tooltip("Görsel olarak dönecek nesne.")]
         public Transform SpinVisual;
 
-        private RouletteWheelModelSO model => modelSO;
-        internal RouletteWheelModelSO Model => model;
+        internal RouletteWheelModelSO Model => modelSO;
         internal Transform Center => center;
         
         public Vector3 GetPocketWorldPosition(int pocketNumber)
         {
-            var pockets = model.PocketDefinitions;
+            var pockets = Model.PocketDefinitions;
             int count = pockets.Count;
             float sweep = 360f / count;
             var index = -1;
@@ -37,7 +36,7 @@ namespace Game.RouletteSystem
             float startAngle = index * sweep;
             float midAngle = startAngle + sweep * 0.5f;
             
-            Vector3 pocketPos = center.position + AngleToDirectionInPlane(midAngle, center.transform.forward, refDir) * (model.PocketRadiusCircle);
+            Vector3 pocketPos = center.position + AngleToDirectionInPlane(midAngle, center.transform.forward, refDir) * (Model.PocketRadiusCircle);
             return pocketPos;
         }
         private static Vector3 AngleToDirectionInPlane(float degrees, Vector3 planeNormal, Vector3 referenceDir)

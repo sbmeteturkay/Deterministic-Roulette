@@ -69,8 +69,7 @@ namespace Game.RouletteSystem
         private IEnumerator UpdateRotation(float duration, float initialAngularVelocity)
         {
             float elapsed = 0f;
-            float currentRotation = 0f;
-            
+            float currentRotation = view.GetSpinVisual().localEulerAngles.y;
             while (true)
             {
                 elapsed += Time.deltaTime;
