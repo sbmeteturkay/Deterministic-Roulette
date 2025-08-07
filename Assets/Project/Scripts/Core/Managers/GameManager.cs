@@ -93,7 +93,6 @@ namespace RouletteGame.Managers
         private void RouletteControllerOnOnRouletteBallInPocket(int outcomeWinningNumber)
         {
             OnSpinCompleted(outcomeWinningNumber);
-            _bettingSystem.HoverWinningBetNumber(outcomeWinningNumber);
         }
 
         private void OnSpinRequested()
@@ -128,12 +127,15 @@ namespace RouletteGame.Managers
                 _playerStatsModel.AddWin(netProfitLoss); // Net karı istatistiklere ekle
                 ServiceLocator.SoundService.PlaySfx("win");
                 Debug.Log($"Kazandınız! Net kazanç: {netProfitLoss:F2}");
+                _bettingSystem.HoverWinningBetNumber(winningNumber,true);
+
             }
             else if (netProfitLoss < 0)
             {
                 ServiceLocator.SoundService.PlaySfx("lose");
                 _playerStatsModel.AddLoss(Mathf.Abs(netProfitLoss)); // Net kaybı istatistiklere ekle
                 Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs(netProfitLoss):F2}");
+                _bettingSystem.HoverWinningBetNumber(winningNumber,false);
             }
             else
             {

@@ -35,9 +35,9 @@ namespace Game.Core.Area
             _areaView.SetCoveredAreasListFromNumbers(coveredAreaNumbers);
         }
 
-        public void SetHoveredArea(int hoveredAreaNumber)
+        public void SetHoveredArea(int hoveredAreaNumber, bool win)
         {
-            _areaView.SetHoveredArea(hoveredAreaNumber);
+            _areaView.SetHoveredArea(hoveredAreaNumber,win);
         }
 
         public Vector3 GetWorldPositionFromArea(Area area)

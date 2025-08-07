@@ -58,7 +58,7 @@ namespace RouletteGame.Models
                 return false;
             }
             //unselect recent winning number after any bet
-            HoverWinningBetNumber(-1);
+            HoverWinningBetNumber(-1,false);
             //_areaSelector.SetCoveredAreaNumbers(new List<int>());
             _activeBets.Add(bet);
             ServiceLocator.SoundService.PlaySfx("chip-put");
@@ -105,12 +105,16 @@ namespace RouletteGame.Models
                 bet.chipPosition = _areaSelector.GetWorldPositionFromArea(area);
                 if (bet.CoveredNumbers.Count > 1)
                     _areaSelector.SetCoveredAreaNumbers(new List<int>(bet.CoveredNumbers));
+                else
+                {
+                    ClearCoveredBetNumbers();
+                }
                 AddBet(bet);
             }
         }
-        public void HoverWinningBetNumber(int betNumber)
+        public void HoverWinningBetNumber(int betNumber,bool win)
         {
-            _areaSelector.SetHoveredArea(betNumber);
+            _areaSelector.SetHoveredArea(betNumber,win);
         }
 
         public void ClearCoveredBetNumbers()

@@ -10,7 +10,7 @@ namespace Game.Core.Area
         private Camera cameraMain;
         private List<Area> _coveredNumberAreas=new();
         private Area selectedArea;
-
+        private bool win;
         private void Start()
         {
             cameraMain = Camera.main;
@@ -43,9 +43,10 @@ namespace Game.Core.Area
             return new Vector3(area.GetPosition().x, 0, area.GetPosition().y) + transform.position;
         }
 
-        public void SetHoveredArea(int area)
+        public void SetHoveredArea(int area, bool win)
         {
             selectedArea = table.areas.Find(x=>x.GetID()==area.ToString());
+            this.win = win;
         }
         public void SetCoveredAreasListFromNumbers(List<int> coveredNumbers)
         {
@@ -90,7 +91,6 @@ namespace Game.Core.Area
 
                 Rect rect = new Rect(screenCenter - pixelSize / 2f, pixelSize);
 
-                var win = _coveredNumberAreas.Contains(selectedArea);
                 // Renk seçimi
                 GUI.color = win? new Color(0f, 1f, 0f, 0.8f): new Color(1f, .5f, .2f, 0.8f);
                 
