@@ -59,10 +59,10 @@ namespace Game.Core.Area
         }
         private void OnGUI()
         {
-            if (_coveredNumberAreas.Count==0) return;
-
-            HoverSelectedAreas();
             CircleDrawSelectedArea();
+
+            if (_coveredNumberAreas.Count==0) return;
+            HoverSelectedAreas();
             
             GUI.color = Color.white; // Sıfırla
 
@@ -90,8 +90,9 @@ namespace Game.Core.Area
 
                 Rect rect = new Rect(screenCenter - pixelSize / 2f, pixelSize);
 
+                var win = _coveredNumberAreas.Contains(selectedArea);
                 // Renk seçimi
-                GUI.color = _coveredNumberAreas.Contains(selectedArea)? new Color(0f, 1f, 0f, 0.8f): new Color(1f, .5f, .2f, 0.8f);
+                GUI.color = win? new Color(0f, 1f, 0f, 0.8f): new Color(1f, .5f, .2f, 0.8f);
                 
                 float thickness = 2f; // çerçeve kalınlığı
 
@@ -105,8 +106,8 @@ namespace Game.Core.Area
                 GUI.DrawTexture(new Rect(rect.xMax - thickness, rect.yMin, thickness, rect.height), Texture2D.whiteTexture);
 
                 // ID yazısı (orta üstte)
-                GUI.color = Color.black;
-                GUI.Label(new Rect(rect.x, rect.y - 16, rect.width, 20), selectedArea.GetID(), GUI.skin.label);
+                GUI.color = Color.white;
+                GUI.Label(new Rect(rect.xMin, rect.yMin, rect.width, thickness), win?"Win":"Lose", GUI.skin.label);
             }
         }
 

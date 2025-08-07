@@ -24,7 +24,13 @@ namespace RouletteGame.Models
         public event Action<IBet> OnBetRemoved;
         public event Action OnAllBetsCleared;
 
+        private bool canBet = true;
 
+        public bool CanBet
+        {
+            get => canBet;
+            set=>canBet = value;
+        }
         public void Initialize(ChipManager chipManager, AreaSelector areaSelector)
         {
             _areaSelector = areaSelector;
@@ -88,7 +94,7 @@ namespace RouletteGame.Models
         }
         private void AreaSelectorOnSelectArea(Area area)
         {
-            if(area==null)
+            if(area==null||!canBet)
                 return;
             var bet = SignalBetFactory.CreateBetFromSignal(area.GetID(), _chipManager.SelectedChipValue);
             if (bet != null)
