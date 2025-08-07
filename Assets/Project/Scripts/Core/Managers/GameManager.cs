@@ -32,6 +32,7 @@ namespace RouletteGame.Managers
         [Header("Other")]
         [SerializeField] private DeterministicOutcomeSelector _deterministicOutcomeSelector;
         [SerializeField] private AreaSelector _areaSelector;
+        [SerializeField] private Animator gameCameraAnimator;
         
         [Header("Sound")]
         [SerializeField]SoundLibrary _soundLibrary;
@@ -48,10 +49,10 @@ namespace RouletteGame.Managers
             _bettingSystem = new BettingSystem();
             _payoutCalculator = new PayoutCalculator();
             _soundManager = new SoundManager(sfxSource, musicSource,_soundLibrary);
+            _chipManager = new ChipManager(_bettingUI.GetChipSelectionToggles());
+
             
             ServiceLocator.Initialize(_soundManager);
-            
-            _chipManager = new ChipManager(_bettingUI.GetChipSelectionToggles());
             
             // View'ları ve Controller'ları başlat
             _playerStatsView.Initialize(_playerStatsModel);
@@ -66,7 +67,7 @@ namespace RouletteGame.Managers
             _deterministicOutcomeSelector.OnDeterministicModeChanged += DeterministicOutcomeSelectorOnOnDeterministicModeChanged;
             _deterministicOutcomeSelector.OnNumberSelectionChanged += DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
             
-            rouletteController.OnRouletteBallInPocket += RouletteControllerOnOnRouletteBallInPocket;
+            rouletteController.OnRouletteBallInPocketEvent += RouletteControllerOnOnRouletteBallInPocket;
         }
 
  
@@ -76,7 +77,7 @@ namespace RouletteGame.Managers
             _deterministicOutcomeSelector.OnDeterministicModeChanged -= DeterministicOutcomeSelectorOnOnDeterministicModeChanged;
             _deterministicOutcomeSelector.OnNumberSelectionChanged -= DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
             
-            rouletteController.OnRouletteBallInPocket -= RouletteControllerOnOnRouletteBallInPocket;
+            rouletteController.OnRouletteBallInPocketEvent -= RouletteControllerOnOnRouletteBallInPocket;
 
         }
         private void DeterministicOutcomeSelectorOnOnNumberSelectionChanged(int targetNumber)
@@ -102,7 +103,9 @@ namespace RouletteGame.Managers
                 _chipManager.DeductChips(_bettingSystem.TotalBetAmount);
                 _playerStatsModel.IncrementSpinsPlayed();
                 _bettingUI.SetSpinButtonEnabled(false);
+                _bettingSystem.CanBet = false;
                 rouletteController.Spin();
+                gameCameraAnimator.Play("Wheel");
             }
             else
             {
@@ -136,7 +139,8 @@ namespace RouletteGame.Managers
 
             _bettingSystem.ClearAllBets(); // Bahisleri temizle
             _bettingUI.SetSpinButtonEnabled(true);
-            
+            _bettingSystem.CanBet = true;
+            gameCameraAnimator.Play("Top");
         }
 
         private void OnApplicationQuit()

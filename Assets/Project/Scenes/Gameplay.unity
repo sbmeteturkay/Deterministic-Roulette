@@ -1247,6 +1247,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 215569036}
   m_CullTransparentMesh: 1
+--- !u!95 &216461849 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7684729535283255924, guid: 5d020857981916c40888b095dd271831,
+    type: 3}
+  m_PrefabInstance: {fileID: 1514585376}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &222313648
 GameObject:
   m_ObjectHideFlags: 0
@@ -1655,7 +1661,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -1715,8 +1721,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307397165}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.8035316, z: -0.5952621, w: 0}
-  m_LocalPosition: {x: -1.13, y: 4.908, z: 1.41}
+  m_LocalRotation: {x: 0, y: 0.8345388, z: -0.55094916, w: 0}
+  m_LocalPosition: {x: -1.13, y: 3.578, z: 1.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6433,31 +6439,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: RouletteSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 3049171944661209706, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.3478
-      objectReference: {fileID: 0}
-    - target: {fileID: 3049171944661209706, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0059
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163516031614474174, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5061217029876636815, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: m_RotationOffset.x
-      value: -89.980225
-      objectReference: {fileID: 0}
-    - target: {fileID: 5061217029876636815, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: m_RotationOffset.z
-      value: -24.558428
-      objectReference: {fileID: 0}
     - target: {fileID: 5925591940498689206, guid: 5d020857981916c40888b095dd271831,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6512,16 +6493,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ChildCameras.Array.size
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8925064122561409913, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: maxRotationSpeed
-      value: 720
-      objectReference: {fileID: 0}
-    - target: {fileID: 8925064122561409913, guid: 5d020857981916c40888b095dd271831,
-        type: 3}
-      propertyPath: minRotationSpeed
-      value: 360
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6701,6 +6672,7 @@ MonoBehaviour:
   rouletteController: {fileID: 1514585377}
   _deterministicOutcomeSelector: {fileID: 607802474}
   _areaSelector: {fileID: 1660929133}
+  gameCameraAnimator: {fileID: 216461849}
   _soundLibrary: {fileID: 11400000, guid: 19c99074a1c7b2f448a2c7439258a182, type: 2}
   sfxSource: {fileID: 171081212}
   musicSource: {fileID: 487808885}

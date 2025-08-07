@@ -14,7 +14,7 @@ namespace Game.RouletteSystem
         private RouletteWheelController rouletteWheelController;
         private RouletteBallController rouletteBallController;
         
-        public event Action<int> OnRouletteBallInPocket;
+        public event Action<int> OnRouletteBallInPocketEvent;
         
         bool _useRandomNumber = false;
         int targetNumber = 0;
@@ -22,17 +22,17 @@ namespace Game.RouletteSystem
         {
             rouletteWheelController = new RouletteWheelController(rouletteWheelView, rouletteWheelView.Model);
             rouletteBallController = new RouletteBallController(rouletteWheelController,rouletteBallView);
-            rouletteBallController.OnRouletteBallInPocket += RouletteBallControllerOnOnRouletteBallInPocket;
+            rouletteBallController.OnRouletteBallInPocket += OnRouletteBallInPocket;
         }
 
         private void OnDestroy()
         {
-            rouletteBallController.OnRouletteBallInPocket -= RouletteBallControllerOnOnRouletteBallInPocket;
+            rouletteBallController.OnRouletteBallInPocket -= OnRouletteBallInPocket;
         }
 
-        private void RouletteBallControllerOnOnRouletteBallInPocket()
+        private void OnRouletteBallInPocket()
         {
-            OnRouletteBallInPocket?.Invoke(targetNumber);
+            OnRouletteBallInPocketEvent?.Invoke(targetNumber);
         }
 
         public void Spin()

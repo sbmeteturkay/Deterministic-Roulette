@@ -2135,7 +2135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7363077103467463487
 Transform:
   m_ObjectHideFlags: 0
@@ -2177,7 +2177,10 @@ MonoBehaviour:
   m_AnimatedTarget: {fileID: 3283259361922506760}
   m_LayerIndex: 0
   m_ShowDebugText: 0
-  m_ChildCameras: []
+  m_ChildCameras:
+  - {fileID: 1642207851818980239}
+  - {fileID: 3323652098971460464}
+  - {fileID: 2683247628540756915}
   m_Instructions:
   - m_FullHash: -1019929913
     m_VirtualCamera: {fileID: 1642207851818980239}
