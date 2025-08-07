@@ -7,7 +7,11 @@ Clone the repository. Open with Unity 2022.3.62f1. Find the main scene from **As
 
 ### Demo Play
 
-![Uygulama Ekran Görüntüsü](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![DemoPlay](
+
+https://github.com/user-attachments/assets/66c77ead-cbd1-4c3c-b66f-d225a2f3b3d2
+
+)
 
 
 ### Features
@@ -129,6 +133,27 @@ This project applies core Object-Oriented Programming principles throughout its 
 
 - **I — Interface Segregation**:  
   Shared interfaces are lean and specific to features (e.g., area selection or chip usage), preventing bloated abstractions.
+
+  ## ⚠️ Known Issues & Future Improvements
+
+- **Dependency Injection Framework**:  
+  Currently, dependencies are manually instantiated in `GameManager` and registered via `ServiceLocator`.  
+  A dedicated dependency injection framework (e.g., Zenject) could improve scalability and testability.
+
+- **UI Implementation**:  
+  The current bet placement interface relies on **OnGUI**, which is not optimal for production use.  
+  Replacing it with 3D models or Unity's modern UI (uGUI / UI Toolkit) would improve visuals and usability.
+
+- **Mobile Performance**:  
+  Optimizations (e.g., object pooling, reduced draw calls, LOD for 3D models) could be applied to improve performance on low-end mobile devices.
+
+- **Scene Design & Layout**:  
+  Current scene composition could be enhanced with improved lighting, optimized asset usage, and clearer visual hierarchy.
+
+- **Multi-Scene Setup**:  
+  Implementing a multi-layer scene architecture (e.g., separating UI, core gameplay, and environment into additive scenes)  
+  would improve organization, enable faster iteration, and make it easier to load/unload features dynamically.
+
 
 - **D — Dependency Inversion**:  
   High-level modules depend on abstractions (interfaces in `Shared/`), not concrete implementations.  
