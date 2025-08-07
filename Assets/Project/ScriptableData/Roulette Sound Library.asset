@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0cb9e7ef2f4885b1e83d460ee5a2ff, type: 3}
+  m_Name: Roulette Sound Library
+  m_EditorClassIdentifier: 
+  sounds:
+  - id: ball-roll
+    clip: {fileID: 8300000, guid: ccccca26a22ef354db4a3a55c62c2692, type: 3}
+  - id: ball-hit
+    clip: {fileID: 8300000, guid: 6c2117e33c0124a4bbb302548b33aafe, type: 3}
+  - id: ball-inpocket
+    clip: {fileID: 8300000, guid: a1babf88821b8ae44901fa67f3ee3fcf, type: 3}
+  - id: wheel-rotate
+    clip: {fileID: 8300000, guid: 16135f5fff5e5f94d85bab236cdb20e5, type: 3}

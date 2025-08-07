@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using System.Linq;
+using RouletteGame.Service;
 
 namespace Game.RouletteSystem
 {
@@ -10,6 +10,7 @@ namespace Game.RouletteSystem
         private readonly RouletteWheelModelSO model;
 
         private int selectedPocked;
+        AudioSource audioSource;
         public RouletteWheelController(IWheelView view, RouletteWheelModelSO model)
         {
             this.view = view;
@@ -26,6 +27,7 @@ namespace Game.RouletteSystem
             float duration = Random.Range(minDuration, maxDuration);
 
             float initialAngularVelocity = Random.Range(minSpinAngularVelocity, maxSpinAngularVelocity);
+            audioSource=ServiceLocator.SoundService.PlaySfx("wheel-rotate",true);
 
             yield return UpdateRotation(duration,initialAngularVelocity);
         }
@@ -76,7 +78,8 @@ namespace Game.RouletteSystem
                 float t = Mathf.Clamp01(elapsed / duration);
                 float ease = model.RotationEaseCurve.Evaluate(t);
                 float angularVelocity = initialAngularVelocity * ease;
-
+                audioSource.pitch = Mathf.Max(.7f,ease);
+                audioSource.volume = Mathf.Abs(ease);
                 currentRotation += angularVelocity * Time.deltaTime;
                 view.GetSpinVisual().localRotation = Quaternion.Euler(0f, currentRotation, 0f);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using RouletteGame.Service;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,8 +18,10 @@ namespace Game.RouletteSystem
         }
         public IEnumerator StartSpinBall()
         {
+            ServiceLocator.SoundService.PlaySfx("ball-roll");
             var rouletteBall = rouletteBallView.rouletteBall;
             
+            rouletteBall.SetActive(true);
             var duration=Random.Range(4f, 16f);
 
             var outerRadius = rouletteWheelController.GetBowlRadius();
@@ -49,16 +52,19 @@ namespace Game.RouletteSystem
                 rouletteBall.transform.position = rouletteWheelController.GetWheelCenter().position + offset;
                 yield return null;
             }
-
+            ServiceLocator.SoundService.StopSfx("ball-roll");
             yield return BallJumpIntoPocket();
         }
         private IEnumerator BallJumpIntoPocket()
         {
+            //deflector hit
+            ServiceLocator.SoundService.PlaySfx("ball-hit");
+            
             var rouletteBall = rouletteBallView.rouletteBall;
 
             // Toplam zıplama sayısı
             int jumps = Random.Range(3, 6);
-
+            float time = 0f;
             // Her zıplamada hedef yeniden hesaplanacak
             for (int i = 0; i < jumps; i++)
             {
@@ -78,7 +84,7 @@ namespace Game.RouletteSystem
                 // Yükseklik rastgele (arc)
                 float height = Random.Range(.1f, .3f);
                 float durationThis = Mathf.Max(0.4f, height * 2f); // sıfır süreden kaçın
-                float time = 0f;
+                time = 0f;
 
                 while (time < durationThis)
                 {
@@ -86,8 +92,10 @@ namespace Game.RouletteSystem
                     {
                         // //cebe oturt
                         target = rouletteWheelController.GetPocketPosition();
+                        target.y -= .01f;
                         toTarget = target - currentPos;
                         nextWaypoint = currentPos + toTarget * frac;
+                        ServiceLocator.SoundService.PlaySfx("ball-inpocket");
                     }
                     time += Time.deltaTime;
                     float normalized = Mathf.Clamp01(time / durationThis);
@@ -96,10 +104,36 @@ namespace Game.RouletteSystem
                     rouletteBall.transform.position = basePos + Vector3.up * arc;
                     yield return null;
                 }
+                //jump sound
+                ServiceLocator.SoundService.PlaySfx("ball-hit");
+            }
+            yield return SettleWithAnimation(rouletteBall);
+        }
 
+        private IEnumerator SettleWithAnimation(GameObject rouletteBall)
+        {
+            
+            float time;
+            var settlePosition=rouletteBall.transform.localPosition;
+            var settleTime= Random.Range(1, 3);
+            var wobbleMagnitude = .01f; // Ne kadar sallanacağı (unit cinsinden)
+            var wobbleSpeed = 20f;       // Ne kadar hızlı sallanacağı
+            time = 0f;
+            while (time < settleTime)
+            {
+                time += Time.deltaTime;
+                
+                // Sinüs bazlı yalpalama (x ve y eksenlerinde hafifçe)
+                float t = time / settleTime;
+                float fade = 1f - t; // zaman ilerledikçe 1'den 0'a düşer
+
+                float wobbleX = Mathf.Sin(time * wobbleSpeed) * wobbleMagnitude * fade;
+                float wobbleZ = Mathf.Cos(time * wobbleSpeed) * wobbleMagnitude * fade;
+
+                rouletteBall.transform.localPosition = settlePosition + new Vector3(wobbleX, wobbleZ, 0);
+                yield return null;
             }
             OnRouletteBallInPocket?.Invoke();
         }
-
     }
 }

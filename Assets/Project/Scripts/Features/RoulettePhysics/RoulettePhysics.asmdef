@@ -1,3 +1,17 @@
 {
-	"name": "RoulettePhysics"
+    "name": "RoulettePhysics",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c7ae28f43473a1949b30699baa1187a0",
+        "GUID:4c55ceb48fab0b949965466879cf5d4c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
