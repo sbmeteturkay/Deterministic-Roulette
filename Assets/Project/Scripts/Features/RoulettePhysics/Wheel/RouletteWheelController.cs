@@ -88,6 +88,7 @@ namespace Game.RouletteSystem
 
                 yield return null;
             }
+            audioSource.Stop();
         }
 
         

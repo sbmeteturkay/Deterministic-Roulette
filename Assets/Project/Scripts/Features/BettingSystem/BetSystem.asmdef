@@ -2,7 +2,9 @@
     "name": "BetSystem",
     "rootNamespace": "",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:4c55ceb48fab0b949965466879cf5d4c",
+        "GUID:c7ae28f43473a1949b30699baa1187a0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

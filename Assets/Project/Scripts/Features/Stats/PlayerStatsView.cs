@@ -11,10 +11,10 @@ namespace RouletteGame.Views
     public class PlayerStatsView : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] private TextMeshProUGUI _spinsPlayedText;
-        [SerializeField] private TextMeshProUGUI _totalWinsText;
-        [SerializeField] private TextMeshProUGUI _totalLossesText;
-        [SerializeField] private TextMeshProUGUI _profitLossText;
+        [SerializeField] private TextMeshPro _spinsPlayedText;
+        [SerializeField] private TextMeshPro _totalWinsText;
+        [SerializeField] private TextMeshPro _totalLossesText;
+        [SerializeField] private TextMeshPro _profitLossText;
         [SerializeField] private Button _resetStatsButton;
 
         private PlayerStatsModel _model;

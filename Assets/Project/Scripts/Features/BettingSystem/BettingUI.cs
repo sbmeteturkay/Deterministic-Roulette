@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using TMPro;
 using RouletteGame.Models;
 using RouletteGame.Interfaces;
-using UnityEngine.Serialization;
 
 namespace RouletteGame.Views
 {
@@ -18,12 +17,15 @@ namespace RouletteGame.Views
         [Header("Chip Selection")]
         [SerializeField] private ToggleGroup _chipGroup;
         [SerializeField] private TextMeshProUGUI _selectedChipText;
-        [SerializeField] private TextMeshProUGUI _balanceText;
+        [SerializeField] private TextMeshPro _balanceText;
 
         [Header("Betting Controls")]
         [SerializeField] private Button _clearBetsButton;
         [SerializeField] private Button _spinButton;
-        [SerializeField] private TextMeshProUGUI _totalBetText;
+        [SerializeField] private TextMeshPro _totalBetText;
+        
+        [Header("Other")]
+        [SerializeField] private TextMeshPro lastWinningNumbersText;
 
         private ChipManager _chipManager;
         private BettingSystem _bettingSystem;
@@ -31,6 +33,9 @@ namespace RouletteGame.Views
 
         public Action OnSpinRequested;
         private Camera _camera;
+        
+        [HideInInspector]
+        public List<int> lastWinningNumbers = new();
 
         private void Start()
         {
@@ -62,6 +67,7 @@ namespace RouletteGame.Views
             // İlk güncelleme
             UpdateBalanceDisplay(_chipManager.CurrentBalance);
             UpdateSelectedChipDisplay(_chipManager.SelectedChipValue);
+            UpdateWinningNumbers();
             UpdateTotalBetDisplay();
         }
 
@@ -154,6 +160,19 @@ namespace RouletteGame.Views
             {
                 _totalBetText.text = $"Toplam Bahis: {_bettingSystem.TotalBetAmount:F2}";
             }
+
+        }
+
+        public void UpdateWinningNumbers()
+        {
+            var lastWinningNumbersTxt = "";
+            for (var index = 0; index < lastWinningNumbers.Count; index++)
+            {
+                var lastWinningNumber = lastWinningNumbers[index];
+                lastWinningNumbersTxt += (index!=0?", ":"")+lastWinningNumber.ToString();
+            }
+
+            lastWinningNumbersText.text= lastWinningNumbersTxt;
         }
 
         private void OnBetAdded(IBet bet)

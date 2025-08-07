@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RouletteGame.Service;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -62,6 +63,7 @@ namespace RouletteGame.Models
             if (isValidChip)
             {
                 _selectedChipValue = chipValue;
+                ServiceLocator.SoundService.PlaySfx("button-click");
                 OnChipValueChanged?.Invoke(_selectedChipValue);
                 return true;
             }

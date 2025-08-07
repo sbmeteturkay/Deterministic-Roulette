@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Core.Area;
 using RouletteGame.Interfaces;
+using RouletteGame.Service;
 using UnityEngine;
 
 namespace RouletteGame.Models
@@ -25,6 +26,7 @@ namespace RouletteGame.Models
         public event Action OnAllBetsCleared;
 
         private bool canBet = true;
+        
 
         public bool CanBet
         {
@@ -59,6 +61,7 @@ namespace RouletteGame.Models
             HoverWinningBetNumber(-1);
             //_areaSelector.SetCoveredAreaNumbers(new List<int>());
             _activeBets.Add(bet);
+            ServiceLocator.SoundService.PlaySfx("chip-put");
             OnBetAdded?.Invoke(bet);
             return true;
         }
