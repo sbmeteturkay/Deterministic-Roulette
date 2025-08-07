@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
+using Game.Core;
 using Game.Core.Area;
 using Game.RouletteSystem;
 using RouletteGame.Controllers;
 using UnityEngine;
 using RouletteGame.Models;
+using RouletteGame.Service;
 using RouletteGame.Views;
 
 namespace RouletteGame.Managers
@@ -15,10 +15,12 @@ namespace RouletteGame.Managers
     public class GameManager : MonoBehaviour
     {
         private BettingSystem _bettingSystem;
+        private SoundManager _soundManager;
+        private ChipManager _chipManager;
+        private PayoutCalculator _payoutCalculator;
 
         [Header("Models")]
         private PlayerStatsModel _playerStatsModel;
-        [SerializeField] private ChipManager _chipManager;
         
         [Header("Views")]
         [SerializeField] private PlayerStatsView _playerStatsView;
@@ -30,35 +32,27 @@ namespace RouletteGame.Managers
         [Header("Other")]
         [SerializeField] private DeterministicOutcomeSelector _deterministicOutcomeSelector;
         [SerializeField] private AreaSelector _areaSelector;
-        // Diğer yardımcı sınıflar
-        private PayoutCalculator _payoutCalculator;
-
+        
+        [Header("Sound")]
+        [SerializeField]SoundLibrary _soundLibrary;
+        [SerializeField]AudioSource sfxSource;
+        [SerializeField]AudioSource musicSource;
+        
         private bool useRandomNumber=false;
 
         void Awake()
         {
             // Bağımlılık Enjeksiyonu (Dependency Injection) ve Başlatma
             // Varsayılan olarak Avrupa Ruleti kullanıyoruz
-
             _playerStatsModel = new PlayerStatsModel();
             _bettingSystem = new BettingSystem();
-            if (!PlayerPrefs.HasKey("ChipBalance"))
-            {
-                PlayerPrefs.SetInt("ChipBalance", 100);
-            }
-
-            _chipManager = new ChipManager(PlayerPrefs.GetInt("ChipBalance"));
-            //add chip values to chip manager
-            var list = _bettingUI.GetChipSelectionToggles();
-            for (var i = 0; i < list.Count; i++)
-            {
-                var chipSelection = list[i];
-                _chipManager.AvailableChipValues.Add(new Chip(chipSelection.targetGraphic.mainTexture,
-                    _bettingUI.predefinedChipValues[i]));
-            }
-            
             _payoutCalculator = new PayoutCalculator();
-
+            _soundManager = new SoundManager(sfxSource, musicSource,_soundLibrary);
+            
+            ServiceLocator.Initialize(_soundManager);
+            
+            _chipManager = new ChipManager(_bettingUI.GetChipSelectionToggles());
+            
             // View'ları ve Controller'ları başlat
             _playerStatsView.Initialize(_playerStatsModel);
             _bettingSystem.Initialize(_chipManager,_areaSelector);
@@ -73,8 +67,6 @@ namespace RouletteGame.Managers
             _deterministicOutcomeSelector.OnNumberSelectionChanged += DeterministicOutcomeSelectorOnOnNumberSelectionChanged;
             
             rouletteController.OnRouletteBallInPocket += RouletteControllerOnOnRouletteBallInPocket;
-
-
         }
 
  
