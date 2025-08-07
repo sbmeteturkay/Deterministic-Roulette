@@ -105,6 +105,7 @@ namespace RouletteGame.Managers
                 _bettingUI.SetSpinButtonEnabled(false);
                 _bettingSystem.CanBet = false;
                 rouletteController.Spin();
+                ServiceLocator.SoundService.PlaySfx("spin");
                 gameCameraAnimator.Play("Wheel");
             }
             else
@@ -125,10 +126,12 @@ namespace RouletteGame.Managers
             {
                 _chipManager.AddChips(totalPayout); // Sadece kazanılan miktarı ekle
                 _playerStatsModel.AddWin(netProfitLoss); // Net karı istatistiklere ekle
+                ServiceLocator.SoundService.PlaySfx("win");
                 Debug.Log($"Kazandınız! Net kazanç: {netProfitLoss:F2}");
             }
             else if (netProfitLoss < 0)
             {
+                ServiceLocator.SoundService.PlaySfx("lose");
                 _playerStatsModel.AddLoss(Mathf.Abs(netProfitLoss)); // Net kaybı istatistiklere ekle
                 Debug.Log($"Kaybettiniz! Net kayıp: {Mathf.Abs(netProfitLoss):F2}");
             }
@@ -139,6 +142,8 @@ namespace RouletteGame.Managers
 
             _bettingSystem.ClearAllBets(); // Bahisleri temizle
             _bettingUI.SetSpinButtonEnabled(true);
+            _bettingUI.lastWinningNumbers.Add(winningNumber);
+            _bettingUI.UpdateWinningNumbers();
             _bettingSystem.CanBet = true;
             gameCameraAnimator.Play("Top");
         }

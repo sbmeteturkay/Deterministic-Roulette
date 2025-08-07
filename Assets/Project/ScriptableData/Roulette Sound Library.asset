@@ -21,3 +21,13 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: a1babf88821b8ae44901fa67f3ee3fcf, type: 3}
   - id: wheel-rotate
     clip: {fileID: 8300000, guid: 16135f5fff5e5f94d85bab236cdb20e5, type: 3}
+  - id: chip-put
+    clip: {fileID: 8300000, guid: 6765e51f55d57aa40b5348b2c55c45d2, type: 3}
+  - id: button-click
+    clip: {fileID: 8300000, guid: 1a597f27b56f7e640bec3f61d6f33e30, type: 3}
+  - id: win
+    clip: {fileID: 8300000, guid: 42f29695c8c91264a8967e16f69142d2, type: 3}
+  - id: lose
+    clip: {fileID: 8300000, guid: 0e6cf3ee1fa995f4ca46c774f0ea65c2, type: 3}
+  - id: spin
+    clip: {fileID: 8300000, guid: bd3dfa2627919a4478884eebee9d1df9, type: 3}
