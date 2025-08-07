@@ -30,9 +30,6 @@ namespace RouletteGame.Views
         private List<Toggle> _chipSelectionToggles=new();
 
         public Action OnSpinRequested;
-        [HideInInspector]
-        public List<int> predefinedChipValues = new() { 1, 5, 10, 25, 50, 100 };
-
         private Camera _camera;
 
         private void Start()

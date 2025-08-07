@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RouletteGame.Models
 {
-    [Serializable]
     public struct Chip
     {
         public int value;
@@ -19,7 +19,6 @@ namespace RouletteGame.Models
     /// <summary>
     /// Oyuncunun çip bakiyesini yöneten sınıf
     /// </summary>
-    [Serializable]
     public class ChipManager
     {
         private int _currentBalance;
@@ -33,10 +32,22 @@ namespace RouletteGame.Models
 
         public event Action<int> OnBalanceChanged;
         public event Action<int> OnChipValueChanged;
+        public List<int> predefinedChipValues = new() { 1, 5, 10, 25, 50, 100 };
 
-        public ChipManager( int initialBalance = 1000)
+        public ChipManager(List<Toggle> chipSelectionToggles)
         {
-            _currentBalance = initialBalance;
+            if (!PlayerPrefs.HasKey("ChipBalance"))
+            {
+                PlayerPrefs.SetInt("ChipBalance", 100);
+            }
+            _currentBalance = PlayerPrefs.GetInt("ChipBalance");
+            
+            var list = chipSelectionToggles;
+            for (var i = 0; i < list.Count; i++)
+            {
+                AvailableChipValues.Add(new Chip(list[i].targetGraphic.mainTexture,
+                    predefinedChipValues[i]));
+            }
         }
 
         /// <summary>
