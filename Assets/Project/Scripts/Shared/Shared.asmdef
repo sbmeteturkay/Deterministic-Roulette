@@ -1,0 +1,14 @@
+{
+    "name": "Shared",
+    "rootNamespace": "",
+    "references": ["GUID:c7ae28f43473a1949b30699baa1187a0"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
