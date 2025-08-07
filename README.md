@@ -7,12 +7,7 @@ Clone the repository. Open with Unity 2022.3.62f1. Find the main scene from **As
 
 ### Demo Play
 
-![DemoPlay](
-
 https://github.com/user-attachments/assets/66c77ead-cbd1-4c3c-b66f-d225a2f3b3d2
-
-)
-
 
 ### Features
 
