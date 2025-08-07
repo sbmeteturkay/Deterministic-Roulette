@@ -36,6 +36,12 @@ namespace RouletteGame.Views
         
         [HideInInspector]
         public List<int> lastWinningNumbers = new();
+        bool isBetValuable => _bettingSystem.TotalBetAmount<=_chipManager.CurrentBalance;
+
+        //chips to show up on table
+        Dictionary<int, int> chipsOnVault = new();
+        float chipSpacingX = 25;
+        float chipSpacingY = 3;
 
         private void Start()
         {
@@ -180,6 +186,7 @@ namespace RouletteGame.Views
             UpdateTotalBetDisplay();
             // Görsel bet indicator eklenebilir
             CreateBetIndicator(bet);
+            SetSpinButtonEnabled(isBetValuable);
         }
 
         private void OnBetRemoved(IBet bet)
@@ -187,12 +194,14 @@ namespace RouletteGame.Views
             UpdateTotalBetDisplay();
             // Görsel bet indicator kaldırılabilir
             RemoveBetIndicator(bet);
+            SetSpinButtonEnabled(isBetValuable);
         }
 
         private void OnAllBetsCleared()
         {
             UpdateTotalBetDisplay();
             ClearAllBetIndicators();
+            SetSpinButtonEnabled(isBetValuable);
         }
 
         private void CreateBetIndicator(IBet bet)
@@ -228,6 +237,49 @@ namespace RouletteGame.Views
         }
 
         private void OnGUI()
+        {
+            DrawChipsOnBetTable();
+            DrawChipsOnVault();
+        }
+
+        private void DrawChipsOnVault()
+        {
+            var balance = _chipManager.CurrentBalance-_bettingSystem.TotalBetAmount;
+
+            for (var index = _chipManager.predefinedChipValues.Count-1; index>=0; index--)
+            {
+                var denom = _chipManager.predefinedChipValues[index];
+                chipsOnVault[denom] = balance / denom;
+                balance %= denom;
+            }
+
+            var groupChips = chipsOnVault
+                .Where(kvp => kvp.Value > 0)
+                .OrderByDescending(kvp => kvp.Key)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            Vector3 screenPos = _camera.WorldToScreenPoint(_balanceText.transform.position);
+            screenPos.y = Screen.height - (screenPos.y+ 30);
+            for (int x = 0; x < groupChips.Count; x++)
+            {
+                int denom = groupChips[x];
+                int count = chipsOnVault[denom];
+
+                var chip = _chipManager.AvailableChipValues
+                    .Find(_x => _x.value == groupChips[x]);
+
+                for (int y = 0; y < count; y++)
+                {
+                    var posX = screenPos.x- x * chipSpacingX;
+                    var posY = screenPos.y - y * chipSpacingY;
+
+                    GUI.DrawTexture(new Rect(posX, posY, 25, 25), chip.icon);
+                }
+            }
+        }
+
+        private void DrawChipsOnBetTable()
         {
             if (_bettingSystem.ActiveBets.Count == 0)
                 return;
